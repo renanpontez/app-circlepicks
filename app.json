@@ -1,29 +1,42 @@
 {
   "expo": {
-    "name": "circle-picks",
+    "name": "Circle Picks",
     "slug": "circle-picks",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "scheme": "phlstart",
+    "scheme": "circlepicks",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#141422"
+      "backgroundColor": "#FFFFFF"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.phlstart.app"
+      "bundleIdentifier": "com.circlepicks.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Circle Picks needs camera access to take photos of places you recommend.",
+        "NSPhotoLibraryUsageDescription": "Circle Picks needs photo library access to add photos to your recommendations.",
+        "NSLocationWhenInUseUsageDescription": "Circle Picks uses your location to find nearby places and show location-based recommendations."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#141422"
+        "backgroundColor": "#FD512E"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.phlstart.app"
+      "package": "com.circlepicks.app",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -43,12 +56,40 @@
           "image": "./assets/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#141422"
+          "backgroundColor": "#FFFFFF"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Circle Picks needs access to your photos to add images to your recommendations.",
+          "cameraPermission": "Circle Picks needs access to your camera to take photos of places."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Circle Picks uses your location to find nearby places."
+        }
+      ],
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.581653005150-1ekf4f5v1tr0p0rhitb7d4kh94f2g8ro"
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "root": "./src/app"
+      },
+      "eas": {
+        "projectId": "2889aafb-c66c-47de-af29-0dd3bac5057f"
+      }
+    },
+    "owner": "renanagilitycreative"
   }
 }

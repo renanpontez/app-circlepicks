@@ -8,18 +8,40 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Circle Picks brand colors
         primary: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
+          DEFAULT: '#FD512E',
+          50: '#FFF5F2',
+          100: '#FFEBE6',
+          200: '#FFD4CC',
+          300: '#FFB3A3',
+          400: '#FF8066',
+          500: '#FD512E',
+          600: '#E5401F',
+          700: '#CC3318',
+          800: '#A62812',
+          900: '#801E0D',
         },
+        // Surface colors
+        surface: {
+          DEFAULT: '#F6F7F9',
+          50: '#FFFFFF',
+          100: '#F6F7F9',
+          200: '#EDEEF1',
+          300: '#E4E6EA',
+        },
+        // Chip/tag background
+        chip: {
+          DEFAULT: '#EDEEF1',
+          active: '#FFE6E0',
+        },
+        // Text colors
+        'dark-grey': '#111111',
+        'medium-grey': '#555555',
+        'light-grey': '#888888',
+        // Dividers
+        divider: '#E4E6EA',
+        // Secondary palette
         secondary: {
           50: '#f8fafc',
           100: '#f1f5f9',

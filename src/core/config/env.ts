@@ -1,6 +1,5 @@
 /**
  * Configuração de variáveis de ambiente
- * Em produção, use expo-constants ou react-native-dotenv
  */
 
 interface Environment {
@@ -9,33 +8,18 @@ interface Environment {
   DEBUG: boolean;
 }
 
-const development: Environment = {
-  API_URL: 'http://localhost:3000/api',
-  ENV: 'development',
-  DEBUG: true,
-};
-
-const staging: Environment = {
-  API_URL: 'https://staging-api.yourapp.com/api',
-  ENV: 'staging',
-  DEBUG: true,
-};
-
-const production: Environment = {
-  API_URL: 'https://api.yourapp.com/api',
-  ENV: 'production',
-  DEBUG: false,
-};
-
-// Seleciona ambiente baseado em variável ou padrão
 const getEnvironment = (): Environment => {
-  // Você pode usar process.env.__DEV__ ou Constants.expoConfig
-  if (__DEV__) {
-    return development;
-  }
-  
-  // Para staging/production, configure conforme necessário
-  return production;
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000';
+
+  // DEBUG: log API URL on startup to verify .env is embedded correctly
+  console.log('[ENV] API_URL:', apiUrl);
+  console.log('[ENV] SUPABASE_URL:', process.env.EXPO_PUBLIC_SUPABASE_URL?.substring(0, 30));
+
+  return {
+    API_URL: apiUrl,
+    ENV: __DEV__ ? 'development' : 'production',
+    DEBUG: __DEV__,
+  };
 };
 
 export const env = getEnvironment();

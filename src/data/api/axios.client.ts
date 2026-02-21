@@ -26,13 +26,19 @@ export const createHttpClient = (storage: IStorage, baseURL: string = ''): IHttp
   // Helper functions
   const normalizeError = (error: unknown): Error => {
     if (axios.isAxiosError(error)) {
+      const data = error.response?.data;
+      // Avoid using raw HTML as error message (e.g. Vercel error pages)
+      const isHtml = typeof data === 'string' && data.trimStart().startsWith('<');
       const message =
-        error.response?.data?.message ||
+        (!isHtml && typeof data === 'string' ? data : null) ||
+        data?.message ||
+        data?.error ||
         error.message ||
         'An unexpected error occurred';
       const normalizedError = new Error(message);
-      (normalizedError as Error & { status?: number }).status =
+      (normalizedError as Error & { status?: number; responseData?: unknown }).status =
         error.response?.status;
+      (normalizedError as Error & { responseData?: unknown }).responseData = data;
       return normalizedError;
     }
     return error instanceof Error ? error : new Error('Unknown error');

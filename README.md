@@ -1,6 +1,3 @@
-<p align="center">
-  <img src="./assets/hero-image.png" alt="PHL RN Boilerplate" />
-</p>
 
 # PHL RN Boilerplate
 
