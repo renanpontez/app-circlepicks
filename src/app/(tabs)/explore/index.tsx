@@ -89,7 +89,7 @@ export default function ExploreScreen() {
                   className="bg-white border border-divider px-4 py-2.5 rounded-xl active:bg-surface"
                 >
                   <Text className="text-dark-grey font-medium">{tag.display_name}</Text>
-                  <Text className="text-light-grey text-xs">{tag.count} places</Text>
+                  <Text className="text-light-grey text-xs">{tag.count} {t('common.places')}</Text>
                 </Pressable>
               ))}
             </ScrollView>
@@ -117,7 +117,7 @@ export default function ExploreScreen() {
                     <Ionicons name="location" size={16} color="#FD512E" />
                     <Text className="text-dark-grey font-medium ml-1">{city.city}</Text>
                   </View>
-                  <Text className="text-light-grey text-xs">{city.count} places</Text>
+                  <Text className="text-light-grey text-xs">{city.count} {t('common.places')}</Text>
                 </Pressable>
               ))}
             </ScrollView>

@@ -7,7 +7,6 @@ import {
   Pressable,
   Image,
   ActivityIndicator,
-  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -18,6 +17,7 @@ import debounce from 'lodash.debounce';
 
 import { usePlaceSearchWithLocation, useLocation, useCreateExperience } from '@/hooks';
 import { TagInput } from '@/components';
+import { toast } from '@/stores';
 import type { PlaceSearchResult, PriceRange, ExperienceVisibility } from '@/domain/models';
 
 type Step = 'place' | 'details';
@@ -68,7 +68,7 @@ export default function AddExperienceScreen() {
 
   const handleImagePick = async () => {
     if (images.length >= 5) {
-      Alert.alert(t('add.images.maxReached', 'Maximum 5 images allowed'));
+      toast.warning(t('add.images.maxReached', 'Maximum 5 images allowed'));
       return;
     }
 
@@ -87,13 +87,13 @@ export default function AddExperienceScreen() {
 
   const handleCameraCapture = async () => {
     if (images.length >= 5) {
-      Alert.alert(t('add.images.maxReached', 'Maximum 5 images allowed'));
+      toast.warning(t('add.images.maxReached', 'Maximum 5 images allowed'));
       return;
     }
 
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert(t('add.camera.permissionDenied', 'Camera permission required'));
+      toast.warning(t('add.camera.permissionDenied', 'Camera permission required'));
       return;
     }
 
@@ -145,14 +145,14 @@ export default function AddExperienceScreen() {
       setImages([]);
       setVisibility('public');
 
-      Alert.alert(
+      toast.success(
         t('add.success.title', 'Saved!'),
         t('add.success.message', 'Your experience has been added successfully.')
       );
       router.back();
     } catch (error: any) {
       console.error('Create experience error:', error?.message, error?.responseData);
-      Alert.alert(
+      toast.error(
         t('add.error.title', 'Error'),
         error?.responseData?.details || error?.message || t('add.error.message', 'Failed to save experience. Please try again.')
       );

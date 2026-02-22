@@ -179,7 +179,7 @@ export default function ExperienceDetailScreen() {
               <>
                 <Text className="text-light-grey mx-2">·</Text>
                 <Text className="text-light-grey">
-                  {experience.place.recommendation_count} recs
+                  {experience.place.recommendation_count} {t('common.recs')}
                 </Text>
               </>
             )}

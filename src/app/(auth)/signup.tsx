@@ -15,7 +15,6 @@ export default function SignUpScreen() {
   const { signInWithGoogle } = useGoogleAuth();
 
   const [displayName, setDisplayName] = useState('');
-  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -23,7 +22,7 @@ export default function SignUpScreen() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const handleSignUp = async () => {
-    if (!displayName || !username || !email || !password) {
+    if (!displayName || !email || !password) {
       setError(t('signup.error.required', 'Please fill in all fields'));
       return;
     }
@@ -33,18 +32,12 @@ export default function SignUpScreen() {
       return;
     }
 
-    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-      setError(t('signup.error.usernameFormat', 'Username can only contain letters, numbers, and underscores'));
-      return;
-    }
-
     try {
       setError(null);
       await signUpWithEmail({
         email,
         password,
         display_name: displayName,
-        username: username.toLowerCase(),
       });
     } catch (err: any) {
       setError(err.message || t('signup.error.failed', 'Sign up failed. Please try again.'));
@@ -130,7 +123,7 @@ export default function SignUpScreen() {
                 </Text>
                 <TextInput
                   className="border border-divider rounded-xl px-4 py-3 text-dark-grey text-base"
-                  placeholder={t('signup.displayNamePlaceholder', 'John Doe')}
+                  placeholder={t('signup.displayNamePlaceholder', 'Seu Nome')}
                   placeholderTextColor="#888888"
                   value={displayName}
                   onChangeText={setDisplayName}
@@ -141,30 +134,11 @@ export default function SignUpScreen() {
 
               <View>
                 <Text className="text-dark-grey font-medium mb-2">
-                  {t('signup.username', 'Username')}
-                </Text>
-                <TextInput
-                  className="border border-divider rounded-xl px-4 py-3 text-dark-grey text-base"
-                  placeholder={t('signup.usernamePlaceholder', 'johndoe')}
-                  placeholderTextColor="#888888"
-                  value={username}
-                  onChangeText={(text) => setUsername(text.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  editable={!isAnyLoading}
-                />
-                <Text className="text-light-grey text-xs mt-1">
-                  {t('signup.usernameHint', 'Letters, numbers, and underscores only')}
-                </Text>
-              </View>
-
-              <View>
-                <Text className="text-dark-grey font-medium mb-2">
                   {t('signup.email', 'Email')}
                 </Text>
                 <TextInput
                   className="border border-divider rounded-xl px-4 py-3 text-dark-grey text-base"
-                  placeholder={t('signup.emailPlaceholder', 'your@email.com')}
+                  placeholder={t('signup.emailPlaceholder', 'seu@email.com')}
                   placeholderTextColor="#888888"
                   value={email}
                   onChangeText={setEmail}

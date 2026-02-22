@@ -19,7 +19,8 @@
       "infoPlist": {
         "NSCameraUsageDescription": "Circle Picks needs camera access to take photos of places you recommend.",
         "NSPhotoLibraryUsageDescription": "Circle Picks needs photo library access to add photos to your recommendations.",
-        "NSLocationWhenInUseUsageDescription": "Circle Picks uses your location to find nearby places and show location-based recommendations."
+        "NSLocationWhenInUseUsageDescription": "Circle Picks uses your location to find nearby places and show location-based recommendations.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -76,6 +77,14 @@
         "@react-native-google-signin/google-signin",
         {
           "iosUrlScheme": "com.googleusercontent.apps.581653005150-1ekf4f5v1tr0p0rhitb7d4kh94f2g8ro"
+        }
+      ],
+      [
+        "@sentry/react-native/expo",
+        {
+          "url": "https://sentry.io/",
+          "project": "react-native",
+          "organization": "agility-4k"
         }
       ]
     ],

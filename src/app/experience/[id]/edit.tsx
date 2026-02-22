@@ -17,7 +17,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 import { useExperience, useUpdateExperience, useDeleteExperience } from '@/hooks';
 import { TagInput } from '@/components';
-import { useAuthStore } from '@/stores';
+import { useAuthStore, toast } from '@/stores';
 import type { PriceRange, ExperienceVisibility } from '@/domain/models';
 
 const PRICE_RANGES: PriceRange[] = ['$', '$$', '$$$', '$$$$'];
@@ -61,7 +61,7 @@ export default function EditExperienceScreen() {
 
   const handleImagePick = async () => {
     if (images.length >= 5) {
-      Alert.alert(t('add.images.maxReached', 'Maximum 5 images allowed'));
+      toast.warning(t('add.images.maxReached', 'Maximum 5 images allowed'));
       return;
     }
 
@@ -94,7 +94,7 @@ export default function EditExperienceScreen() {
 
       router.back();
     } catch (error) {
-      Alert.alert(
+      toast.error(
         t('common.error', 'Error'),
         t('experience.edit.saveFailed', 'Failed to save changes. Please try again.')
       );
@@ -115,7 +115,7 @@ export default function EditExperienceScreen() {
               await deleteExperience.mutateAsync(id);
               router.replace('/(tabs)');
             } catch (error) {
-              Alert.alert(
+              toast.error(
                 t('common.error', 'Error'),
                 t('experience.edit.deleteFailed', 'Failed to delete. Please try again.')
               );

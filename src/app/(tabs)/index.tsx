@@ -59,7 +59,7 @@ export default function FeedScreen() {
       <View className="flex-row items-center justify-between px-4 py-3 bg-white border-b border-divider">
         <View className="flex-row items-center gap-2">
           <Logo size={28} />
-          <Text className="text-xl font-bold text-dark-grey">Circle Picks</Text>
+          <Text className="text-xl font-bold text-dark-grey">{t('common.appName')}</Text>
         </View>
         <Pressable
           onPress={() => router.push('/search')}

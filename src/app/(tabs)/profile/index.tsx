@@ -41,7 +41,7 @@ export default function ProfileScreen() {
   };
 
   const handleSettings = () => {
-    // TODO: Navigate to settings
+    router.push('/settings');
   };
 
   const handleSignOut = async () => {
@@ -125,7 +125,7 @@ export default function ProfileScreen() {
           <Text className="text-lg font-bold text-dark-grey">
             {user?.display_name}
           </Text>
-          <Text className="text-medium-grey">@{user?.username}</Text>
+          {/* <Text className="text-medium-grey">@{user?.username}</Text> */}
 
           {/* Edit Profile Button */}
           <Pressable

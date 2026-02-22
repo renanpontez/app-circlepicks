@@ -217,7 +217,6 @@ export interface SignUpRequest {
   email: string;
   password: string;
   display_name: string;
-  username: string;
 }
 
 export interface SignInRequest {

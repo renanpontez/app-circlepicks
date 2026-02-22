@@ -7,7 +7,28 @@ import { AppProvider, useAppReady } from '@/providers';
 import { ThemeProvider, useTheme } from '@/providers/ThemeProvider';
 import { useAuthStore } from '@/stores';
 import { useAuth } from '@/hooks';
-import { DebugFAB } from '@/components';
+import { DebugFAB, ToastContainer } from '@/components';
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://06624bb0e7ea5f6aeeae09736673ed99@o4510926400061440.ingest.us.sentry.io/4510926401372160',
+
+  // Adds more context data to events (IP address, cookies, user, etc.)
+  // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
+  sendDefaultPii: true,
+
+  // Enable Logs
+  enableLogs: true,
+
+  // Configure Session Replay
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1,
+  integrations: [Sentry.mobileReplayIntegration()],
+
+  // uncomment the line below to enable Spotlight (https://spotlightjs.com)
+  // spotlight: __DEV__,
+});
+
 
 // Keep splash screen visible while app is loading
 SplashScreen.preventAutoHideAsync();
@@ -98,6 +119,7 @@ function RootLayoutContent() {
           }}
         />
       </Stack>
+      <ToastContainer />
       {__DEV__ && <DebugFAB />}
     </AuthGuard>
   );
