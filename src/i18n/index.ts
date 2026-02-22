@@ -13,11 +13,12 @@ const resources = {
 // Detecta o idioma do dispositivo
 const deviceLanguage = Localization.getLocales()[0]?.languageTag ?? 'pt-BR';
 
-// Check if device language is supported
+// Check if device language is supported (match by prefix if exact match fails)
 const supportedLanguages = Object.keys(resources);
+const devicePrefix = deviceLanguage.split('-')[0];
 const initialLanguage = supportedLanguages.includes(deviceLanguage)
   ? deviceLanguage
-  : 'pt-BR';
+  : supportedLanguages.find((lang) => lang.startsWith(devicePrefix)) ?? 'pt-BR';
 
 i18n.use(initReactI18next).init({
   resources,

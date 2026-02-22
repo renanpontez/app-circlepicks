@@ -14,6 +14,12 @@ export default {
     search: 'Buscar',
     noResults: 'Nenhum resultado encontrado',
     goBack: 'Voltar',
+    appName: 'Circle Picks',
+    recs: 'indicacoes',
+    places: 'lugares',
+    by: 'por',
+    or: 'ou',
+    signOut: 'Sair',
   },
   validation: {
     required: 'Campo obrigatório',
@@ -43,6 +49,9 @@ export default {
     },
     getStarted: 'Começar',
     signIn: 'Já tenho uma conta',
+    continueWithGoogle: 'Continuar com Google',
+    signUpWithEmail: 'Cadastre-se com e-mail',
+    hasAccount: 'Ja tem uma conta? ',
   },
   signin: {
     title: 'Bem-vindo de volta',
@@ -57,7 +66,10 @@ export default {
     error: {
       required: 'Preencha todos os campos',
       failed: 'Falha ao entrar. Tente novamente.',
+      googleFailed: 'Falha ao entrar com Google. Tente novamente.',
     },
+    googleButton: 'Continuar com Google',
+    orDivider: 'ou',
   },
   signup: {
     title: 'Criar conta',
@@ -81,7 +93,10 @@ export default {
       passwordLength: 'A senha deve ter pelo menos 6 caracteres',
       usernameFormat: 'O nome de usuário pode conter apenas letras, números e underscores',
       failed: 'Falha ao cadastrar. Tente novamente.',
+      googleFailed: 'Falha ao entrar com Google. Tente novamente.',
     },
+    googleButton: 'Continuar com Google',
+    orDivider: 'ou',
   },
   feed: {
     loading: 'Carregando seu feed...',
@@ -178,11 +193,23 @@ export default {
       title: 'Erro',
       message: 'Falha ao salvar experiência. Tente novamente.',
     },
+    success: {
+      title: 'Salvo!',
+      message: 'Sua experiencia foi adicionada com sucesso.',
+    },
   },
   experience: {
     error: 'Falha ao carregar experiência',
     openMaps: 'Abrir no Maps',
     alsoRecommended: 'Também recomendado por',
+    edit: {
+      title: 'Editar Experiencia',
+      notOwner: 'Voce so pode editar suas proprias experiencias',
+      saveFailed: 'Falha ao salvar alteracoes. Tente novamente.',
+      deleteTitle: 'Excluir Experiencia',
+      deleteMessage: 'Tem certeza que deseja excluir esta experiencia? Esta acao nao pode ser desfeita.',
+      deleteFailed: 'Falha ao excluir. Tente novamente.',
+    },
   },
   search: {
     placeholder: 'Buscar lugares, usuários...',
@@ -195,6 +222,12 @@ export default {
       users: 'PESSOAS',
       places: 'LUGARES',
       experiences: 'RECOMENDAÇÕES',
+    },
+  },
+  auth: {
+    error: {
+      googleNotSuccessful: 'Login com Google nao foi bem-sucedido',
+      noIdToken: 'Nenhum token de identificacao recebido do Google',
     },
   },
   settings: {

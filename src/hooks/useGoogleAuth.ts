@@ -5,14 +5,18 @@ import { supabase } from '@/data/supabase/client';
 import { useAuthStore } from '@/stores';
 import { getHttpClient } from '@/core/config';
 import { API_ENDPOINTS } from '@/data/api/endpoints';
+import i18n from '@/i18n';
 import type { AuthUser } from '@/domain/models';
+
+// Google OAuth Client ID (public, also in app.json iosUrlScheme)
+const GOOGLE_CLIENT_ID = '581653005150-1ekf4f5v1tr0p0rhitb7d4kh94f2g8ro.apps.googleusercontent.com';
 
 // Configure Google Sign-In
 // webClientId: needed to get the ID token for Supabase
 // iosClientId: needed for native iOS sign-in (no Firebase/GoogleService-Info.plist)
 GoogleSignin.configure({
-  webClientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID,
-  iosClientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID,
+  webClientId: GOOGLE_CLIENT_ID,
+  iosClientId: GOOGLE_CLIENT_ID,
 });
 
 export function useGoogleAuth() {
@@ -30,12 +34,12 @@ export function useGoogleAuth() {
       const response = await GoogleSignin.signIn();
 
       if (!isSuccessResponse(response)) {
-        throw new Error('Google sign in was not successful');
+        throw new Error(i18n.t('auth.error.googleNotSuccessful'));
       }
 
       const idToken = response.data?.idToken;
       if (!idToken) {
-        throw new Error('No ID token received from Google');
+        throw new Error(i18n.t('auth.error.noIdToken'));
       }
 
       // Exchange Google ID token for a Supabase session

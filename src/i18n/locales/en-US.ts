@@ -14,6 +14,12 @@ export default {
     search: 'Search',
     noResults: 'No results found',
     goBack: 'Go Back',
+    appName: 'Circle Picks',
+    recs: 'recs',
+    places: 'places',
+    by: 'by',
+    or: 'or',
+    signOut: 'Sign Out',
   },
   validation: {
     required: 'Required field',
@@ -43,6 +49,9 @@ export default {
     },
     getStarted: 'Get Started',
     signIn: 'I already have an account',
+    continueWithGoogle: 'Continue with Google',
+    signUpWithEmail: 'Sign up with email',
+    hasAccount: 'Already have an account? ',
   },
   signin: {
     title: 'Welcome back',
@@ -57,7 +66,10 @@ export default {
     error: {
       required: 'Please fill in all fields',
       failed: 'Sign in failed. Please try again.',
+      googleFailed: 'Google sign in failed. Please try again.',
     },
+    googleButton: 'Continue with Google',
+    orDivider: 'or',
   },
   signup: {
     title: 'Create account',
@@ -81,7 +93,10 @@ export default {
       passwordLength: 'Password must be at least 6 characters',
       usernameFormat: 'Username can only contain letters, numbers, and underscores',
       failed: 'Sign up failed. Please try again.',
+      googleFailed: 'Google sign in failed. Please try again.',
     },
+    googleButton: 'Continue with Google',
+    orDivider: 'or',
   },
   feed: {
     loading: 'Loading your feed...',
@@ -178,11 +193,23 @@ export default {
       title: 'Error',
       message: 'Failed to save experience. Please try again.',
     },
+    success: {
+      title: 'Saved!',
+      message: 'Your experience has been added successfully.',
+    },
   },
   experience: {
     error: 'Failed to load experience',
     openMaps: 'Open in Maps',
     alsoRecommended: 'Also recommended by',
+    edit: {
+      title: 'Edit Experience',
+      notOwner: 'You can only edit your own experiences',
+      saveFailed: 'Failed to save changes. Please try again.',
+      deleteTitle: 'Delete Experience',
+      deleteMessage: 'Are you sure you want to delete this experience? This action cannot be undone.',
+      deleteFailed: 'Failed to delete. Please try again.',
+    },
   },
   search: {
     placeholder: 'Search places, users...',
@@ -195,6 +222,12 @@ export default {
       users: 'PEOPLE',
       places: 'PLACES',
       experiences: 'RECOMMENDATIONS',
+    },
+  },
+  auth: {
+    error: {
+      googleNotSuccessful: 'Google sign in was not successful',
+      noIdToken: 'No ID token received from Google',
     },
   },
   settings: {

@@ -180,7 +180,7 @@ export default function SearchScreen() {
                     {place.recommendation_count && place.recommendation_count > 0 && (
                       <View className="bg-primary-100 px-2 py-1 rounded">
                         <Text className="text-primary text-xs font-medium">
-                          {place.recommendation_count} recs
+                          {place.recommendation_count} {t('common.recs')}
                         </Text>
                       </View>
                     )}
@@ -218,7 +218,7 @@ export default function SearchScreen() {
                         {experience.place.name}
                       </Text>
                       <Text className="text-medium-grey text-sm" numberOfLines={1}>
-                        by {experience.user.display_name}
+                        {t('common.by')} {experience.user.display_name}
                       </Text>
                     </View>
                     <Text className="text-primary font-semibold">

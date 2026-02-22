@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Pressable, Image } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import type { ExperienceFeedItem } from '@/domain/models';
 
@@ -16,6 +17,7 @@ export function ExperienceCard({
   onBookmarkToggle,
   showUser = true,
 }: ExperienceCardProps) {
+  const { t } = useTranslation();
   const { user, place, price_range, tags, time_ago, isBookmarked } = experience;
 
   return (
@@ -72,7 +74,7 @@ export function ExperienceCard({
           {place.city_short}, {place.country}
           {place.recommendation_count && place.recommendation_count > 1 && (
             <Text className="text-light-grey">
-              {' '}· {place.recommendation_count} recs
+              {' '}· {place.recommendation_count} {t('common.recs')}
             </Text>
           )}
         </Text>
