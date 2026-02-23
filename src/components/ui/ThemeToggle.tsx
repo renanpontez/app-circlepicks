@@ -68,14 +68,14 @@ export function ThemeToggle({ isDark, onToggle }: ThemeToggleProps) {
     );
 
     return {
-      backgroundColor: backgroundColor > 0.5 ? '#334155' : '#e2e8f0',
+      backgroundColor: backgroundColor > 0.5 ? '#404040' : '#e5e5e5',
     };
   });
 
   // Animação do indicador background
   const indicatorBgStyle = useAnimatedStyle(() => {
     return {
-      backgroundColor: progress.value > 0.5 ? '#0f172a' : '#ffffff',
+      backgroundColor: progress.value > 0.5 ? '#1c1c1c' : '#ffffff',
     };
   });
 

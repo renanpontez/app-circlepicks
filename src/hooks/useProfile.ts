@@ -42,6 +42,13 @@ export function useUserProfile(userId: string, options?: { enabled?: boolean }) 
   });
 }
 
+interface UpdateProfileResponse {
+  id: string;
+  display_name: string;
+  username: string;
+  avatar_url: string | null;
+}
+
 // Hook for updating profile
 export function useUpdateProfile() {
   const httpClient = getHttpClient();
@@ -50,17 +57,17 @@ export function useUpdateProfile() {
 
   return useMutation({
     mutationFn: async (data: UpdateProfileRequest) => {
-      const response = await httpClient.patch<UserProfile>(
+      const response = await httpClient.patch<UpdateProfileResponse>(
         API_ENDPOINTS.profile.update,
         data
       );
       return response.data;
     },
     onSuccess: (data) => {
-      // Update local profile cache
-      queryClient.setQueryData(['profile', 'me'], data);
+      // Invalidate profile cache (response is partial, not full UserProfile)
+      queryClient.invalidateQueries({ queryKey: ['profile', 'me'] });
 
-      // Update auth store user
+      // Update auth store user immediately
       updateUser({
         display_name: data.display_name,
         username: data.username,

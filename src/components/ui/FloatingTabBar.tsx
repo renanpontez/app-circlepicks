@@ -36,8 +36,8 @@ interface FloatingTabBarProps extends BottomTabBarProps {
 export function FloatingTabBar({ state, descriptors, navigation }: FloatingTabBarProps) {
   const { isDark } = useTheme();
 
-  const backgroundColor = isDark ? 'rgba(30, 41, 59, 0.95)' : 'rgba(255, 255, 255, 0.95)';
-  const borderColor = isDark ? 'rgba(71, 85, 105, 0.5)' : 'rgba(226, 232, 240, 0.8)';
+  const backgroundColor = isDark ? 'rgba(28, 28, 28, 0.95)' : 'rgba(255, 255, 255, 0.95)';
+  const borderColor = isDark ? 'rgba(64, 64, 64, 0.5)' : 'rgba(229, 229, 229, 0.8)';
   const shadowOpacity = isDark ? 0.3 : 0.15;
 
   return (
@@ -122,7 +122,7 @@ interface TabItemProps {
 
 function TabItem({ label, iconName, isFocused, isDark, onPress, onLongPress }: TabItemProps) {
   const activeColor = isDark ? '#60a5fa' : '#2563eb';
-  const inactiveColor = isDark ? '#64748b' : '#94a3b8';
+  const inactiveColor = isDark ? '#737373' : '#a3a3a3';
   const color = isFocused ? activeColor : inactiveColor;
   const activeBg = isDark ? 'rgba(96, 165, 250, 0.15)' : 'rgba(37, 99, 235, 0.1)';
 

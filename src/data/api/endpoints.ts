@@ -34,15 +34,14 @@ export const API_ENDPOINTS = {
   profile: {
     me: '/api/profile/me',
     byId: (userId: string) => `/api/profile/${userId}`,
-    update: '/api/profile/me',
+    update: '/api/profile',
   },
 
   // Bookmarks
   bookmarks: {
     list: '/api/bookmarks',
     add: '/api/bookmarks',
-    remove: (experienceId: string) => `/api/bookmarks/${experienceId}`,
-    check: (experienceId: string) => `/api/bookmarks/check/${experienceId}`,
+    remove: (bookmarkId: string) => `/api/bookmarks/${bookmarkId}`,
   },
 
   // Follow

@@ -85,6 +85,9 @@ export function useUserExperiences(userId: string, options?: { enabled?: boolean
             city,
             country,
             instagram_handle
+          ),
+          bookmarks!bookmarks_experience_id_fkey (
+            id
           )
         `)
         .eq('user_id', userId)
@@ -107,6 +110,7 @@ export function useUserExperiences(userId: string, options?: { enabled?: boolean
         const placeName = exp.places?.name || 'Unknown Place';
         const placeCity = exp.places?.city || '';
         const images = exp.images || [];
+        const bookmark = Array.isArray(exp.bookmarks) ? exp.bookmarks[0] : null;
 
         return {
           id: exp.id,
@@ -132,6 +136,8 @@ export function useUserExperiences(userId: string, options?: { enabled?: boolean
           time_ago: formatTimeAgo(exp.created_at),
           description: exp.brief_description,
           visibility: exp.visibility,
+          isBookmarked: !!bookmark,
+          bookmarkId: bookmark?.id,
         };
       });
     },

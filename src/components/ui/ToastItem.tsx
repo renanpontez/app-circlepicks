@@ -54,9 +54,9 @@ export function ToastItem({ id, type, title, message, duration }: ToastItemProps
   const config = TOAST_CONFIG[type];
 
   const toastWidth = Math.min(320, screenWidth - 32);
-  const bgColor = isDark ? '#1e293b' : '#ffffff';
-  const titleColor = isDark ? '#f1f5f9' : '#0f172a';
-  const messageColor = isDark ? '#94a3b8' : '#64748b';
+  const bgColor = isDark ? '#2c2c2c' : '#ffffff';
+  const titleColor = isDark ? '#f5f5f5' : '#1c1c1c';
+  const messageColor = isDark ? '#a3a3a3' : '#737373';
 
   // Auto-dismiss timer
   useEffect(() => {
@@ -136,7 +136,7 @@ export function ToastItem({ id, type, title, message, duration }: ToastItemProps
           style={styles.closeButton}
           accessibilityLabel="Dismiss notification"
         >
-          <Ionicons name="close" size={18} color={isDark ? '#64748b' : '#94a3b8'} />
+          <Ionicons name="close" size={18} color={isDark ? '#737373' : '#a3a3a3'} />
         </Pressable>
       </Animated.View>
     </GestureDetector>

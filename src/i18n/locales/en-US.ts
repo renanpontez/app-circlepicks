@@ -71,6 +71,8 @@ export default {
     },
     googleButton: 'Continue with Google',
     orDivider: 'or',
+    forgotPassword: 'Forgot your password?',
+    forgotPasswordTitle: 'Reset Password',
   },
   signup: {
     title: 'Create account',
@@ -230,6 +232,16 @@ export default {
       googleNotSuccessful: 'Google sign in was not successful',
       noIdToken: 'No ID token received from Google',
     },
+  },
+  editProfile: {
+    title: 'Edit Profile',
+    changePhoto: 'Change Photo',
+    displayName: 'Display name',
+    username: 'Username',
+    save: 'Save Changes',
+    success: 'Profile updated',
+    error: 'Could not update profile',
+    usernameTaken: 'Username is already taken',
   },
   settings: {
     title: 'Settings',

@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '@/providers/ThemeProvider';
 
 interface InputProps extends TextInputProps {
   label?: string;
@@ -34,6 +35,7 @@ export const Input = forwardRef<TextInput, InputProps>(
   ) => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const isPassword = secureTextEntry !== undefined;
+    const { isDark } = useTheme();
 
     const togglePasswordVisibility = () => {
       setIsPasswordVisible((prev) => !prev);
@@ -42,31 +44,32 @@ export const Input = forwardRef<TextInput, InputProps>(
     return (
       <View className={`mb-4 ${containerClassName ?? ''}`}>
         {label && (
-          <Text className="text-secondary-700 font-medium mb-2 text-sm">
+          <Text className="text-secondary-700 dark:text-secondary-300 font-medium mb-2 text-sm pl-4">
             {label}
           </Text>
         )}
         <View
           className={`
             flex-row items-center rounded-xl border px-4
-            ${error ? 'border-red-500 bg-red-50' : 'border-secondary-200 bg-secondary-50'}
+            ${error ? 'border-red-500 bg-red-50 dark:bg-red-950' : 'border-secondary-200 dark:border-secondary-600 bg-secondary-50 dark:bg-secondary-800'}
           `}
         >
           {leftIcon && (
             <Ionicons
               name={leftIcon}
               size={20}
-              color={error ? '#ef4444' : '#64748b'}
+              color={error ? '#ef4444' : isDark ? '#a3a3a3' : '#737373'}
               style={{ marginRight: 8 }}
             />
           )}
           <TextInput
             ref={ref}
             className={`
-              flex-1 py-3 text-secondary-900 text-base
+              flex-1 text-secondary-900 dark:text-white text-base py-4
               ${className ?? ''}
             `}
-            placeholderTextColor="#94a3b8"
+            style={{ textAlignVertical: 'center', lineHeight: 16}}
+            placeholderTextColor={isDark ? '#737373' : '#a3a3a3'}
             secureTextEntry={isPassword && !isPasswordVisible}
             {...props}
           />
@@ -75,7 +78,7 @@ export const Input = forwardRef<TextInput, InputProps>(
               <Ionicons
                 name={isPasswordVisible ? 'eye-off' : 'eye'}
                 size={20}
-                color="#64748b"
+                color={isDark ? '#a3a3a3' : '#737373'}
               />
             </TouchableOpacity>
           )}
@@ -87,7 +90,7 @@ export const Input = forwardRef<TextInput, InputProps>(
               <Ionicons
                 name={rightIcon}
                 size={20}
-                color={error ? '#ef4444' : '#64748b'}
+                color={error ? '#ef4444' : isDark ? '#a3a3a3' : '#737373'}
               />
             </TouchableOpacity>
           )}

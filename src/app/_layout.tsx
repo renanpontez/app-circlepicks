@@ -5,6 +5,7 @@ import * as SplashScreen from 'expo-splash-screen';
 
 import { AppProvider, useAppReady } from '@/providers';
 import { ThemeProvider, useTheme } from '@/providers/ThemeProvider';
+import { colors } from '@/styles/colors';
 import { useAuthStore } from '@/stores';
 import { useAuth } from '@/hooks';
 import { DebugFAB, ToastContainer } from '@/components';
@@ -89,6 +90,9 @@ function RootLayoutContent() {
         screenOptions={{
           headerShown: false,
           animation: 'slide_from_right',
+          contentStyle: { 
+            backgroundColor: isDark ? colors.secondary[900] : colors.white,
+           },
         }}
       >
         <Stack.Screen name="(auth)" />
@@ -109,6 +113,12 @@ function RootLayoutContent() {
           name="user/[userId]"
           options={{
             presentation: 'card',
+          }}
+        />
+        <Stack.Screen
+          name="profile/edit"
+          options={{
+            presentation: 'modal',
           }}
         />
         <Stack.Screen

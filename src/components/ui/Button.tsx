@@ -21,7 +21,7 @@ interface ButtonProps extends TouchableOpacityProps {
 const variantStyles: Record<ButtonVariant, string> = {
   primary: 'bg-primary-600 active:bg-primary-700',
   secondary: 'bg-secondary-600 active:bg-secondary-700',
-  outline: 'bg-transparent border-2 border-primary-600',
+  outline: 'bg-transparent border-2 border-primary-600 dark:border-primary-500',
   ghost: 'bg-transparent',
 };
 
@@ -59,7 +59,7 @@ export function Button({
   return (
     <TouchableOpacity
       className={`
-        rounded-xl items-center justify-center flex-row
+        rounded-full items-center justify-center flex-row
         ${variantStyles[variant]}
         ${sizeStyles[size]}
         ${fullWidth ? 'w-full' : ''}

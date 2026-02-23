@@ -14,7 +14,6 @@ export {
 export { useMyProfile, useUserProfile, useUpdateProfile } from './useProfile';
 export {
   useBookmarks,
-  useIsBookmarked,
   useAddBookmark,
   useRemoveBookmark,
   useToggleBookmark,

@@ -71,6 +71,8 @@ export default {
     },
     googleButton: 'Continuar com Google',
     orDivider: 'ou',
+    forgotPassword: 'Esqueceu sua senha?',
+    forgotPasswordTitle: 'Redefinir Senha',
   },
   signup: {
     title: 'Criar conta',
@@ -230,6 +232,16 @@ export default {
       googleNotSuccessful: 'Login com Google nao foi bem-sucedido',
       noIdToken: 'Nenhum token de identificacao recebido do Google',
     },
+  },
+  editProfile: {
+    title: 'Editar Perfil',
+    changePhoto: 'Alterar Foto',
+    displayName: 'Nome de exibição',
+    username: 'Nome de usuário',
+    save: 'Salvar Alterações',
+    success: 'Perfil atualizado',
+    error: 'Não foi possível atualizar o perfil',
+    usernameTaken: 'Nome de usuário já está em uso',
   },
   settings: {
     title: 'Configurações',

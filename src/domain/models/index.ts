@@ -125,6 +125,8 @@ export interface ExperienceDetail {
   time_ago: string;
   created_at: string | null;
   other_recommenders?: OtherRecommender[];
+  isBookmarked?: boolean;
+  bookmarkId?: string;
 }
 
 export interface ExperienceFeedItem {

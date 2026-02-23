@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 
 import { useAppStore } from '@/stores';
+import { useTheme } from '@/providers/ThemeProvider';
 import type { Language, ThemeMode } from '@/stores/app.store';
 import i18n from '@/i18n';
 
@@ -13,6 +14,7 @@ export default function SettingsScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const { language, theme, setLanguage, setTheme } = useAppStore();
+  const { isDark } = useTheme();
 
   const handleLanguageChange = (lang: Language) => {
     setLanguage(lang);
@@ -24,37 +26,37 @@ export default function SettingsScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-surface" edges={['top']}>
+    <SafeAreaView className="flex-1 bg-surface dark:bg-secondary-900" edges={['top']}>
       {/* Header */}
-      <View className="flex-row items-center px-4 py-3 bg-white border-b border-divider">
+      <View className="flex-row items-center px-4 py-3 bg-white dark:bg-secondary-900 border-b border-divider dark:border-secondary-700">
         <Pressable onPress={() => router.back()} className="p-2 -ml-2 mr-2">
-          <Ionicons name="arrow-back" size={24} color="#111111" />
+          <Ionicons name="arrow-back" size={24} color={isDark ? '#FFFFFF' : '#111111'} />
         </Pressable>
-        <Text className="text-xl font-bold text-dark-grey">
+        <Text className="text-xl font-bold text-dark-grey dark:text-white">
           {t('settings.title')}
         </Text>
       </View>
 
       <View className="px-4 pt-6">
         {/* Language Section */}
-        <Text className="text-lg font-bold text-dark-grey mb-1">
+        <Text className="text-lg font-bold text-dark-grey dark:text-white mb-1">
           {t('settings.language')}
         </Text>
-        <Text className="text-medium-grey text-sm mb-3">
+        <Text className="text-medium-grey dark:text-secondary-400 text-sm mb-3">
           {t('settings.languageDescription')}
         </Text>
         <View className="flex-row gap-3 mb-8">
           <Pressable
             onPress={() => handleLanguageChange('pt-BR')}
-            className={`flex-1 py-3 rounded-xl items-center border ${
+            className={`flex-1 py-3 rounded-full items-center border ${
               language === 'pt-BR'
                 ? 'bg-primary border-primary'
-                : 'bg-white border-divider'
+                : 'bg-white dark:bg-secondary-800 border-divider dark:border-secondary-700'
             }`}
           >
             <Text
               className={`font-medium ${
-                language === 'pt-BR' ? 'text-white' : 'text-dark-grey'
+                language === 'pt-BR' ? 'text-white' : 'text-dark-grey dark:text-white'
               }`}
             >
               {t('settings.portuguese')}
@@ -62,15 +64,15 @@ export default function SettingsScreen() {
           </Pressable>
           <Pressable
             onPress={() => handleLanguageChange('en-US')}
-            className={`flex-1 py-3 rounded-xl items-center border ${
+            className={`flex-1 py-3 rounded-full items-center border ${
               language === 'en-US'
                 ? 'bg-primary border-primary'
-                : 'bg-white border-divider'
+                : 'bg-white dark:bg-secondary-800 border-divider dark:border-secondary-700'
             }`}
           >
             <Text
               className={`font-medium ${
-                language === 'en-US' ? 'text-white' : 'text-dark-grey'
+                language === 'en-US' ? 'text-white' : 'text-dark-grey dark:text-white'
               }`}
             >
               {t('settings.english')}
@@ -79,24 +81,24 @@ export default function SettingsScreen() {
         </View>
 
         {/* Theme Section */}
-        <Text className="text-lg font-bold text-dark-grey mb-1">
+        <Text className="text-lg font-bold text-dark-grey dark:text-white mb-1">
           {t('settings.theme')}
         </Text>
-        <Text className="text-medium-grey text-sm mb-3">
+        <Text className="text-medium-grey dark:text-secondary-400 text-sm mb-3">
           {t('settings.themeDescription')}
         </Text>
         <View className="flex-row gap-3">
           <Pressable
             onPress={() => handleThemeChange('light')}
-            className={`flex-1 py-3 rounded-xl items-center border ${
+            className={`flex-1 py-3 rounded-full items-center border ${
               theme === 'light'
                 ? 'bg-primary border-primary'
-                : 'bg-white border-divider'
+                : 'bg-white dark:bg-secondary-800 border-divider dark:border-secondary-700'
             }`}
           >
             <Text
               className={`font-medium ${
-                theme === 'light' ? 'text-white' : 'text-dark-grey'
+                theme === 'light' ? 'text-white' : 'text-dark-grey dark:text-white'
               }`}
             >
               {t('settings.light')}
@@ -104,15 +106,15 @@ export default function SettingsScreen() {
           </Pressable>
           <Pressable
             onPress={() => handleThemeChange('dark')}
-            className={`flex-1 py-3 rounded-xl items-center border ${
+            className={`flex-1 py-3 rounded-full items-center border ${
               theme === 'dark'
                 ? 'bg-primary border-primary'
-                : 'bg-white border-divider'
+                : 'bg-white dark:bg-secondary-800 border-divider dark:border-secondary-700'
             }`}
           >
             <Text
               className={`font-medium ${
-                theme === 'dark' ? 'text-white' : 'text-dark-grey'
+                theme === 'dark' ? 'text-white' : 'text-dark-grey dark:text-white'
               }`}
             >
               {t('settings.dark')}

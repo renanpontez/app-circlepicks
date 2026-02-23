@@ -7,6 +7,7 @@ import slugify from 'slugify';
 
 import { useTags, useTagSearch, useCreateTag } from '@/hooks';
 import { useAuthStore } from '@/stores';
+import { useTheme } from '@/providers/ThemeProvider';
 import type { Tag } from '@/domain/models';
 
 interface TagInputProps {
@@ -18,6 +19,7 @@ interface TagInputProps {
 export function TagInput({ selectedTags, onTagsChange, maxTags = 5 }: TagInputProps) {
   const { t } = useTranslation();
   const { user } = useAuthStore();
+  const { isDark } = useTheme();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
@@ -83,12 +85,12 @@ export function TagInput({ selectedTags, onTagsChange, maxTags = 5 }: TagInputPr
   };
 
   return (
-    <View className="bg-white p-4 border-b border-divider">
+    <View className="bg-white dark:bg-secondary-900 p-4 border-b border-divider dark:border-secondary-700">
       {/* Label */}
-      <Text className="text-dark-grey font-semibold mb-3">
+      <Text className="text-dark-grey dark:text-white font-semibold mb-3">
         {t('add.tags.title', 'Tags')}
         <Text className="text-primary"> *</Text>
-        <Text className="text-light-grey font-normal"> ({selectedTags.length}/{maxTags})</Text>
+        <Text className="text-light-grey dark:text-secondary-500 font-normal"> ({selectedTags.length}/{maxTags})</Text>
       </Text>
 
       {/* Selected tags pills */}
@@ -106,25 +108,25 @@ export function TagInput({ selectedTags, onTagsChange, maxTags = 5 }: TagInputPr
       )}
 
       {/* Search input */}
-      <View className="flex-row items-center bg-surface border border-divider rounded-xl px-3 mb-3">
-        <Ionicons name="search" size={18} color="#888888" />
+      <View className="flex-row items-center bg-surface dark:bg-secondary-800 border border-divider dark:border-secondary-700 rounded-xl px-3 mb-3">
+        <Ionicons name="search" size={18} color={isDark ? '#a3a3a3' : '#888888'} />
         <TextInput
-          className="flex-1 py-2.5 px-2 text-dark-grey text-sm"
+          className="flex-1 py-2.5 px-2 text-dark-grey dark:text-white text-sm"
           placeholder={t('add.tags.searchPlaceholder', 'Search or add tags...')}
-          placeholderTextColor="#888888"
+          placeholderTextColor={isDark ? '#737373' : '#888888'}
           value={searchQuery}
           onChangeText={handleSearchChange}
         />
         {searchQuery.length > 0 && (
           <Pressable onPress={() => handleSearchChange('')} hitSlop={8}>
-            <Ionicons name="close-circle" size={18} color="#888888" />
+            <Ionicons name="close-circle" size={18} color={isDark ? '#a3a3a3' : '#888888'} />
           </Pressable>
         )}
       </View>
 
       {/* Section header */}
       {!isSearching && (
-        <Text className="text-xs text-medium-grey font-semibold tracking-wider mb-2">
+        <Text className="text-xs text-medium-grey dark:text-secondary-400 font-semibold tracking-wider mb-2">
           {t('add.tags.popularTitle', 'POPULAR TAGS')}
         </Text>
       )}
@@ -144,18 +146,18 @@ export function TagInput({ selectedTags, onTagsChange, maxTags = 5 }: TagInputPr
               <Pressable
                 key={tag.slug}
                 onPress={() => !isDisabled && handleToggle(tag.slug)}
-                className={`flex-row items-center py-3 border-b border-divider ${
-                  isDisabled ? 'opacity-40' : 'active:bg-surface'
+                className={`flex-row items-center py-3 border-b border-divider dark:border-secondary-700 ${
+                  isDisabled ? 'opacity-40' : 'active:bg-surface dark:active:bg-secondary-700'
                 }`}
               >
                 <Ionicons
                   name={isSelected ? 'checkbox' : 'square-outline'}
                   size={22}
-                  color={isSelected ? '#FD512E' : '#CCCCCC'}
+                  color={isSelected ? '#FD512E' : isDark ? '#525252' : '#CCCCCC'}
                 />
                 <Text
                   className={`ml-3 text-sm ${
-                    isSelected ? 'text-dark-grey font-medium' : 'text-dark-grey'
+                    isSelected ? 'text-dark-grey dark:text-white font-medium' : 'text-dark-grey dark:text-white'
                   }`}
                 >
                   {tag.display_name || tag.slug}
@@ -169,7 +171,7 @@ export function TagInput({ selectedTags, onTagsChange, maxTags = 5 }: TagInputPr
             <Pressable
               onPress={handleCreate}
               disabled={createTag.isPending}
-              className="flex-row items-center py-3 active:bg-surface"
+              className="flex-row items-center py-3 active:bg-surface dark:active:bg-secondary-700"
             >
               {createTag.isPending ? (
                 <ActivityIndicator size="small" color="#FD512E" />
@@ -184,7 +186,7 @@ export function TagInput({ selectedTags, onTagsChange, maxTags = 5 }: TagInputPr
 
           {/* Empty state */}
           {isSearching && (!displayedTags || displayedTags.length === 0) && !showCreateOption && (
-            <Text className="text-medium-grey text-sm text-center py-4">
+            <Text className="text-medium-grey dark:text-secondary-400 text-sm text-center py-4">
               {t('add.tags.noResults', 'No tags found')}
             </Text>
           )}
