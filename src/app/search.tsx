@@ -51,7 +51,7 @@ export default function SearchScreen() {
   const handleExperiencePress = (experience: ExperienceFeedItem) => {
     router.back();
     setTimeout(() => {
-      router.push(`/experience/${experience.experience_id}`);
+      router.push(`/experience/${experience.experience_id || experience.id}`);
     }, 100);
   };
 
@@ -70,7 +70,9 @@ export default function SearchScreen() {
 
   const hasResults =
     data &&
-    (data.experiences.length > 0 || data.users.length > 0 || data.places.length > 0);
+    ((data.experiences?.length ?? 0) > 0 ||
+      (data.users?.length ?? 0) > 0 ||
+      (data.places?.length ?? 0) > 0);
 
   return (
     <SafeAreaView className="flex-1 bg-white" edges={['top']}>
@@ -123,7 +125,7 @@ export default function SearchScreen() {
         ) : (
           <View className="py-2">
             {/* Users Section */}
-            {data.users.length > 0 && (
+            {(data.users?.length ?? 0) > 0 && (
               <View className="mb-4">
                 <Text className="text-light-grey text-sm font-medium px-4 py-2 bg-surface">
                   {t('search.sections.users', 'PEOPLE')}
@@ -155,7 +157,7 @@ export default function SearchScreen() {
             )}
 
             {/* Places Section */}
-            {data.places.length > 0 && (
+            {(data.places?.length ?? 0) > 0 && (
               <View className="mb-4">
                 <Text className="text-light-grey text-sm font-medium px-4 py-2 bg-surface">
                   {t('search.sections.places', 'PLACES')}
@@ -190,7 +192,7 @@ export default function SearchScreen() {
             )}
 
             {/* Experiences Section */}
-            {data.experiences.length > 0 && (
+            {(data.experiences?.length ?? 0) > 0 && (
               <View>
                 <Text className="text-light-grey text-sm font-medium px-4 py-2 bg-surface">
                   {t('search.sections.experiences', 'RECOMMENDATIONS')}

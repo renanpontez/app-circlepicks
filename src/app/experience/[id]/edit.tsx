@@ -18,6 +18,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useExperience, useUpdateExperience, useDeleteExperience } from '@/hooks';
 import { TagInput } from '@/components';
 import { useAuthStore, toast } from '@/stores';
+import { uploadImages } from '@/utils/uploadImages';
 import type { PriceRange, ExperienceVisibility } from '@/domain/models';
 
 const PRICE_RANGES: PriceRange[] = ['$', '$$', '$$$', '$$$$'];
@@ -36,6 +37,7 @@ export default function EditExperienceScreen() {
   const [description, setDescription] = useState('');
   const [images, setImages] = useState<string[]>([]);
   const [visibility, setVisibility] = useState<ExperienceVisibility>('public');
+  const [isSaving, setIsSaving] = useState(false);
 
   // Initialize form with existing data
   useEffect(() => {
@@ -83,12 +85,16 @@ export default function EditExperienceScreen() {
   };
 
   const handleSave = async () => {
+    setIsSaving(true);
     try {
+      // Upload any new local images to Supabase Storage
+      const imageUrls = images.length > 0 ? await uploadImages(images) : undefined;
+
       await updateExperience.mutateAsync({
         price_range: priceRange,
         tags: selectedTags,
         brief_description: description || undefined,
-        images: images.length > 0 ? images : undefined,
+        images: imageUrls,
         visibility,
       });
 
@@ -98,6 +104,8 @@ export default function EditExperienceScreen() {
         t('common.error', 'Error'),
         t('experience.edit.saveFailed', 'Failed to save changes. Please try again.')
       );
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -310,14 +318,14 @@ export default function EditExperienceScreen() {
         <View className="p-4">
           <Pressable
             onPress={handleSave}
-            disabled={updateExperience.isPending || selectedTags.length === 0}
+            disabled={isSaving || selectedTags.length === 0}
             className={`py-4 rounded-xl items-center ${
-              updateExperience.isPending || selectedTags.length === 0
+              isSaving || selectedTags.length === 0
                 ? 'bg-surface'
                 : 'bg-primary active:bg-primary-600'
             }`}
           >
-            {updateExperience.isPending ? (
+            {isSaving ? (
               <ActivityIndicator color="#FD512E" />
             ) : (
               <Text

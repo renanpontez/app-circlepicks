@@ -114,10 +114,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 4,
-
-    borderStyle: 'solid',
-    borderWidth: 3,
-    borderColor: '#FFF',
+    outlineColor: '#FFF',
+    outlineStyle: 'solid',
+    outlineWidth: 8,
   },
   addButton: {
     width: ADD_BUTTON_SIZE,
@@ -126,8 +125,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#FD512E',
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#FD512E',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 10,
     elevation: 8,
-
   },
 });
 

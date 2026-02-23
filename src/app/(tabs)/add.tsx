@@ -18,6 +18,7 @@ import debounce from 'lodash.debounce';
 import { usePlaceSearchWithLocation, useLocation, useCreateExperience } from '@/hooks';
 import { TagInput } from '@/components';
 import { toast } from '@/stores';
+import { uploadImages } from '@/utils/uploadImages';
 import type { PlaceSearchResult, PriceRange, ExperienceVisibility } from '@/domain/models';
 
 type Step = 'place' | 'details';
@@ -37,6 +38,7 @@ export default function AddExperienceScreen() {
   const [description, setDescription] = useState('');
   const [images, setImages] = useState<string[]>([]);
   const [visibility, setVisibility] = useState<ExperienceVisibility>('public');
+  const [isSaving, setIsSaving] = useState(false);
 
   const debouncedSetQuery = useCallback(
     debounce((value: string) => setDebouncedQuery(value), 400),
@@ -113,7 +115,11 @@ export default function AddExperienceScreen() {
   const handleSubmit = async () => {
     if (!selectedPlace) return;
 
+    setIsSaving(true);
     try {
+      // Upload local images to Supabase Storage first
+      const imageUrls = images.length > 0 ? await uploadImages(images) : undefined;
+
       await createExperience.mutateAsync({
         place_id: selectedPlace.id || undefined,
         place: !selectedPlace.id ? {
@@ -130,7 +136,7 @@ export default function AddExperienceScreen() {
         price_range: priceRange,
         tags: selectedTags,
         brief_description: description || undefined,
-        images: images.length > 0 ? images : undefined,
+        images: imageUrls,
         visibility,
       });
 
@@ -156,6 +162,8 @@ export default function AddExperienceScreen() {
         t('add.error.title', 'Error'),
         error?.responseData?.details || error?.message || t('add.error.message', 'Failed to save experience. Please try again.')
       );
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -401,14 +409,14 @@ export default function AddExperienceScreen() {
       <View className="p-4">
         <Pressable
           onPress={handleSubmit}
-          disabled={createExperience.isPending || selectedTags.length === 0}
+          disabled={isSaving || selectedTags.length === 0}
           className={`py-4 rounded-xl items-center ${
-            createExperience.isPending || selectedTags.length === 0
+            isSaving || selectedTags.length === 0
               ? 'bg-surface'
               : 'bg-primary active:bg-primary-600'
           }`}
         >
-          {createExperience.isPending ? (
+          {isSaving ? (
             <ActivityIndicator color="#FD512E" />
           ) : (
             <Text
