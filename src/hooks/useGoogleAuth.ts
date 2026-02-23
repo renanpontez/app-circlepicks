@@ -8,15 +8,12 @@ import { API_ENDPOINTS } from '@/data/api/endpoints';
 import i18n from '@/i18n';
 import type { AuthUser } from '@/domain/models';
 
-// Google OAuth Client ID (public, also in app.json iosUrlScheme)
-const GOOGLE_CLIENT_ID = '581653005150-1ekf4f5v1tr0p0rhitb7d4kh94f2g8ro.apps.googleusercontent.com';
+const WEB_CLIENT_ID = '581653005150-fvqm2qm7mk6lq4k79kkvnfe3a6j0h2ma.apps.googleusercontent.com';
+const IOS_CLIENT_ID = '581653005150-1ekf4f5v1tr0p0rhitb7d4kh94f2g8ro.apps.googleusercontent.com';
 
-// Configure Google Sign-In
-// webClientId: needed to get the ID token for Supabase
-// iosClientId: needed for native iOS sign-in (no Firebase/GoogleService-Info.plist)
 GoogleSignin.configure({
-  webClientId: GOOGLE_CLIENT_ID,
-  iosClientId: GOOGLE_CLIENT_ID,
+  webClientId: WEB_CLIENT_ID,
+  iosClientId: IOS_CLIENT_ID,
 });
 
 export function useGoogleAuth() {

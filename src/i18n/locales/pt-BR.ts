@@ -20,6 +20,7 @@ export default {
     by: 'por',
     or: 'ou',
     signOut: 'Sair',
+    noImage: 'Imagem não disponível',
   },
   validation: {
     required: 'Campo obrigatório',

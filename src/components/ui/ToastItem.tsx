@@ -4,8 +4,6 @@ import { Ionicons } from '@expo/vector-icons';
 import Animated, {
   SlideInRight,
   SlideOutRight,
-  FadeIn,
-  Layout,
   useSharedValue,
   useAnimatedStyle,
   withSpring,
@@ -101,15 +99,13 @@ export function ToastItem({ id, type, title, message, duration }: ToastItemProps
   return (
     <GestureDetector gesture={panGesture}>
       <Animated.View
-        entering={SlideInRight.springify().damping(20).stiffness(300).withInitialValues({ transform: [{ translateX: 350 }] })}
-        exiting={SlideOutRight.duration(250)}
-        layout={Layout.springify().damping(20).stiffness(300)}
+        entering={SlideInRight.duration(250)}
+        exiting={SlideOutRight.duration(200)}
         style={[styles.toast, { width: toastWidth, backgroundColor: bgColor }, animatedStyle]}
         accessibilityRole="alert"
       >
         {/* Accent bar */}
         <Animated.View
-          entering={FadeIn.delay(150).duration(200)}
           style={[styles.accentBar, { backgroundColor: config.accentColor }]}
         />
 

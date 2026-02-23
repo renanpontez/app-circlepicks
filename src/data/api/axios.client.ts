@@ -68,6 +68,10 @@ export const createHttpClient = (storage: IStorage, baseURL: string = ''): IHttp
         if (token && config.headers) {
           config.headers.Authorization = `Bearer ${token}`;
         }
+        // Let Axios set the correct Content-Type (with boundary) for FormData
+        if (config.data instanceof FormData) {
+          delete config.headers['Content-Type'];
+        }
         return config;
       },
       (error) => Promise.reject(error)

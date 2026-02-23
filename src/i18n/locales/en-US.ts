@@ -20,6 +20,7 @@ export default {
     by: 'by',
     or: 'or',
     signOut: 'Sign Out',
+    noImage: 'No image available',
   },
   validation: {
     required: 'Required field',
