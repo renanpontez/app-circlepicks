@@ -152,6 +152,12 @@ export default function SignInScreen() {
               </View>
             </View>
 
+            <Pressable onPress={() => router.push('/(auth)/forgot-password')}>
+              <Text className="text-primary text-sm text-right">
+                {t('signin.forgotPassword', 'Forgot your password?')}
+              </Text>
+            </Pressable>
+
             {error && (
               <View className="bg-red-50 p-3 rounded-xl">
                 <Text className="text-red-600 text-sm">{error}</Text>

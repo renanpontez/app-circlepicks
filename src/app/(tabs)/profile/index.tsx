@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, Pressable, Image, RefreshControl, ActivityIndicator } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, Text, Pressable, Image, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { FlashList } from '@shopify/flash-list';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 
-import { ExperienceCard } from '@/components';
+import { ExperienceCard, ExperienceCardSkeleton } from '@/components';
 import { useMyProfile, useUserExperiences, useBookmarks, useAuth, useToggleBookmark } from '@/hooks';
 import { useAuthStore } from '@/stores';
+import { useTheme } from '@/providers/ThemeProvider';
+import { TAB_BAR_BOTTOM_SPACING } from '@/constants/layout';
 import type { ExperienceFeedItem } from '@/domain/models';
 
 type TabType = 'experiences' | 'bookmarks';
@@ -18,11 +21,12 @@ export default function ProfileScreen() {
   const { user } = useAuthStore();
   const { signOut } = useAuth();
   const { toggle: toggleBookmark } = useToggleBookmark();
+  const { isDark } = useTheme();
 
   const [activeTab, setActiveTab] = useState<TabType>('experiences');
   const [refreshing, setRefreshing] = useState(false);
 
-  const { data: profile, isLoading: profileLoading, refetch: refetchProfile } = useMyProfile();
+  const { data: profile, refetch: refetchProfile } = useMyProfile();
   const { data: experiences, isLoading: experiencesLoading, refetch: refetchExperiences } = useUserExperiences(user?.id || '');
   const { data: bookmarksData, isLoading: bookmarksLoading, refetch: refetchBookmarks } = useBookmarks();
 
@@ -32,13 +36,13 @@ export default function ProfileScreen() {
     setRefreshing(false);
   };
 
-  const handleExperiencePress = (experience: ExperienceFeedItem) => {
+  const handleExperiencePress = useCallback((experience: ExperienceFeedItem) => {
     router.push(`/experience/${experience.experience_id}`);
-  };
+  }, [router]);
 
-  const handleBookmarkToggle = async (experience: ExperienceFeedItem) => {
-    await toggleBookmark(experience.experience_id, experience.isBookmarked ?? false);
-  };
+  const handleBookmarkToggle = useCallback(async (experience: ExperienceFeedItem) => {
+    await toggleBookmark(experience.experience_id, experience.isBookmarked ?? false, experience.bookmarkId);
+  }, [toggleBookmark]);
 
   const handleSettings = () => {
     router.push('/settings');
@@ -48,142 +52,165 @@ export default function ProfileScreen() {
     await signOut();
   };
 
-  if (profileLoading && !profile) {
-    return (
-      <SafeAreaView className="flex-1 bg-surface items-center justify-center">
-        <ActivityIndicator size="large" color="#FD512E" />
-      </SafeAreaView>
-    );
-  }
+  const displayData = activeTab === 'experiences' ? experiences : bookmarksData;
+  const isTabLoading = activeTab === 'experiences'
+    ? (experiencesLoading && !experiences)
+    : (bookmarksLoading && !bookmarksData);
 
-  const displayData = activeTab === 'experiences' ? experiences : bookmarksData?.bookmarks;
-  const isTabLoading = activeTab === 'experiences' ? experiencesLoading : bookmarksLoading;
+  const renderItem = useCallback(({ item, index }: { item: ExperienceFeedItem; index: number }) => (
+    <View className={`px-4 ${index === 0 ? 'pt-6' : ''}`}>
+      <ExperienceCard
+        experience={item}
+        onPress={() => handleExperiencePress(item)}
+        onBookmarkToggle={() => handleBookmarkToggle(item)}
+        showUser={false}
+      />
+    </View>
+  ), [handleExperiencePress, handleBookmarkToggle]);
+
+  const ListHeader = (
+    <>
+      {/* Profile Info */}
+      <View className="bg-white dark:bg-secondary-900 px-4 py-6 border-b border-divider dark:border-secondary-700">
+        <View className="flex-row items-center mb-4">
+          {/* Avatar */}
+          <View className="w-20 h-20 rounded-full bg-surface dark:bg-secondary-800 overflow-hidden mr-4">
+            {user?.avatar_url ? (
+              <Image source={{ uri: user.avatar_url }} className="w-full h-full" />
+            ) : (
+              <View className="w-full h-full items-center justify-center bg-primary-100 dark:bg-primary-900">
+                <Text className="text-primary text-2xl font-bold">
+                  {user?.display_name?.charAt(0).toUpperCase() || '?'}
+                </Text>
+              </View>
+            )}
+          </View>
+
+          {/* Stats */}
+          <View className="flex-1 flex-row justify-around">
+            <StatItem
+              value={profile?.stats.experiences_count || 0}
+              label={t('profile.stats.experiences', 'Places')}
+            />
+            <StatItem
+              value={profile?.stats.followers_count || 0}
+              label={t('profile.stats.followers', 'Followers')}
+            />
+            <StatItem
+              value={profile?.stats.following_count || 0}
+              label={t('profile.stats.following', 'Following')}
+            />
+          </View>
+        </View>
+
+        {/* Name and Username */}
+        <Text className="text-lg font-bold text-dark-grey dark:text-white">
+          {user?.display_name}
+        </Text>
+
+        {/* Edit Profile Button */}
+        <Pressable
+          onPress={() => router.push('/profile/edit')}
+          className="mt-4 border border-divider dark:border-secondary-700 rounded-full py-2.5 items-center active:bg-surface dark:active:bg-secondary-700"
+        >
+          <Text className="text-dark-grey dark:text-white font-medium">
+            {t('profile.editProfile', 'Edit Profile')}
+          </Text>
+        </Pressable>
+      </View>
+
+      {/* Tabs */}
+      <View className="flex-row bg-white dark:bg-secondary-900 border-b border-divider dark:border-secondary-700">
+        <TabButton
+          title={t('profile.tabs.experiences', 'My Places')}
+          isActive={activeTab === 'experiences'}
+          onPress={() => setActiveTab('experiences')}
+        />
+        <TabButton
+          title={t('profile.tabs.bookmarks', 'Saved')}
+          isActive={activeTab === 'bookmarks'}
+          onPress={() => setActiveTab('bookmarks')}
+        />
+      </View>
+    </>
+  );
+
+  const SkeletonList = (
+    <View className="p-4 py-6">
+      <ExperienceCardSkeleton showUser={false} />
+      <ExperienceCardSkeleton showUser={false} />
+      <ExperienceCardSkeleton showUser={false} />
+    </View>
+  );
+
+  const EmptyState = (
+    <View className="items-center py-12">
+      <Ionicons
+        name={activeTab === 'experiences' ? 'map-outline' : 'bookmark-outline'}
+        size={48}
+        color={isDark ? '#a3a3a3' : '#888888'}
+      />
+      <Text className="text-medium-grey dark:text-secondary-400 mt-4 text-center">
+        {activeTab === 'experiences'
+          ? t('profile.empty.experiences', "You haven't added any places yet")
+          : t('profile.empty.bookmarks', "You haven't saved any places yet")}
+      </Text>
+    </View>
+  );
+
+  // Show skeleton loading or empty state as footer when no list data
+  const showList = !isTabLoading && displayData && displayData.length > 0;
 
   return (
-    <SafeAreaView className="flex-1 bg-surface" edges={['top']}>
+    <SafeAreaView className="flex-1 bg-surface dark:bg-secondary-900" edges={['top']}>
       {/* Header */}
-      <View className="flex-row items-center justify-between px-4 py-3 bg-white border-b border-divider">
-        <Text className="text-xl font-bold text-dark-grey">
+      <View className="flex-row items-center justify-between px-4 py-3 bg-white dark:bg-secondary-900 border-b border-divider dark:border-secondary-700">
+        <Text className="text-xl font-bold text-dark-grey dark:text-white">
           {t('profile.title', 'Profile')}
         </Text>
         <View className="flex-row gap-2">
           <Pressable
             onPress={handleSettings}
-            className="p-2 active:bg-surface rounded-full"
+            className="p-2 active:bg-surface dark:active:bg-secondary-700 rounded-full"
           >
-            <Ionicons name="settings-outline" size={24} color="#111111" />
+            <Ionicons name="settings-outline" size={24} color={isDark ? '#FFFFFF' : '#111111'} />
           </Pressable>
           <Pressable
             onPress={handleSignOut}
-            className="p-2 active:bg-surface rounded-full"
+            className="p-2 active:bg-surface dark:active:bg-secondary-700 rounded-full"
           >
-            <Ionicons name="log-out-outline" size={24} color="#111111" />
+            <Ionicons name="log-out-outline" size={24} color={isDark ? '#FFFFFF' : '#111111'} />
           </Pressable>
         </View>
       </View>
 
-      <ScrollView
-        className="flex-1"
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#FD512E" />
-        }
-      >
-        {/* Profile Info */}
-        <View className="bg-white px-4 py-6 border-b border-divider">
-          <View className="flex-row items-center mb-4">
-            {/* Avatar */}
-            <View className="w-20 h-20 rounded-full bg-surface overflow-hidden mr-4">
-              {user?.avatar_url ? (
-                <Image source={{ uri: user.avatar_url }} className="w-full h-full" />
-              ) : (
-                <View className="w-full h-full items-center justify-center bg-primary-100">
-                  <Text className="text-primary text-2xl font-bold">
-                    {user?.display_name?.charAt(0).toUpperCase() || '?'}
-                  </Text>
-                </View>
-              )}
-            </View>
-
-            {/* Stats */}
-            <View className="flex-1 flex-row justify-around">
-              <StatItem
-                value={profile?.stats.experiences_count || 0}
-                label={t('profile.stats.experiences', 'Places')}
-              />
-              <StatItem
-                value={profile?.stats.followers_count || 0}
-                label={t('profile.stats.followers', 'Followers')}
-              />
-              <StatItem
-                value={profile?.stats.following_count || 0}
-                label={t('profile.stats.following', 'Following')}
-              />
-            </View>
-          </View>
-
-          {/* Name and Username */}
-          <Text className="text-lg font-bold text-dark-grey">
-            {user?.display_name}
-          </Text>
-          {/* <Text className="text-medium-grey">@{user?.username}</Text> */}
-
-          {/* Edit Profile Button */}
-          <Pressable
-            onPress={() => {/* TODO: Edit profile */}}
-            className="mt-4 border border-divider rounded-xl py-2.5 items-center active:bg-surface"
-          >
-            <Text className="text-dark-grey font-medium">
-              {t('profile.editProfile', 'Edit Profile')}
-            </Text>
-          </Pressable>
-        </View>
-
-        {/* Tabs */}
-        <View className="flex-row bg-white border-b border-divider">
-          <TabButton
-            title={t('profile.tabs.experiences', 'My Places')}
-            isActive={activeTab === 'experiences'}
-            onPress={() => setActiveTab('experiences')}
-          />
-          <TabButton
-            title={t('profile.tabs.bookmarks', 'Saved')}
-            isActive={activeTab === 'bookmarks'}
-            onPress={() => setActiveTab('bookmarks')}
-          />
-        </View>
-
-        {/* Content */}
-        <View className="p-4">
-          {isTabLoading ? (
-            <View className="py-8 items-center">
-              <ActivityIndicator color="#FD512E" />
-            </View>
-          ) : displayData && displayData.length > 0 ? (
-            displayData.map((experience) => (
-              <ExperienceCard
-                key={experience.id}
-                experience={experience}
-                onPress={() => handleExperiencePress(experience)}
-                onBookmarkToggle={() => handleBookmarkToggle(experience)}
-                showUser={false}
-              />
-            ))
-          ) : (
-            <View className="items-center py-12">
-              <Ionicons
-                name={activeTab === 'experiences' ? 'map-outline' : 'bookmark-outline'}
-                size={48}
-                color="#888888"
-              />
-              <Text className="text-medium-grey mt-4 text-center">
-                {activeTab === 'experiences'
-                  ? t('profile.empty.experiences', "You haven't added any places yet")
-                  : t('profile.empty.bookmarks', "You haven't saved any places yet")}
-              </Text>
-            </View>
-          )}
-        </View>
-      </ScrollView>
+      {showList ? (
+        <FlashList
+          data={displayData}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          ListHeaderComponent={ListHeader}
+          contentContainerStyle={{ paddingBottom: TAB_BAR_BOTTOM_SPACING }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#FD512E" />
+          }
+        />
+      ) : (
+        <FlashList
+          data={[]}
+          renderItem={() => null}
+          ListHeaderComponent={
+            <>
+              {ListHeader}
+              {isTabLoading ? SkeletonList : EmptyState}
+            </>
+          }
+          contentContainerStyle={{ paddingBottom: TAB_BAR_BOTTOM_SPACING }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#FD512E" />
+          }
+        />
+      )}
     </SafeAreaView>
   );
 }
@@ -191,8 +218,8 @@ export default function ProfileScreen() {
 function StatItem({ value, label }: { value: number; label: string }) {
   return (
     <View className="items-center">
-      <Text className="text-xl font-bold text-dark-grey">{value}</Text>
-      <Text className="text-medium-grey text-sm">{label}</Text>
+      <Text className="text-xl font-bold text-dark-grey dark:text-white">{value}</Text>
+      <Text className="text-medium-grey dark:text-secondary-400 text-sm">{label}</Text>
     </View>
   );
 }
@@ -215,7 +242,7 @@ function TabButton({
     >
       <Text
         className={`font-medium ${
-          isActive ? 'text-primary' : 'text-medium-grey'
+          isActive ? 'text-primary' : 'text-medium-grey dark:text-secondary-400'
         }`}
       >
         {title}

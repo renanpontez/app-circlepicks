@@ -4,17 +4,22 @@ import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-
-const TAB_BAR_HEIGHT = 80;
+import { useTheme } from '@/providers/ThemeProvider';
+import { colors } from '@/styles/colors';
 const ADD_BUTTON_SIZE = 58;
 const ADD_RING_SIZE = ADD_BUTTON_SIZE + 12;
 const VISIBLE_TABS = new Set(['index', 'add', 'profile']);
 
 function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const visibleRoutes = state.routes.filter((r) => VISIBLE_TABS.has(r.name));
+  const { isDark } = useTheme();
+
+  const bgColor = isDark ? colors.secondary[900] : colors.white;
+  const borderColor = isDark ? colors.secondary[700] : colors.surface[300];
+  const inactiveColor = isDark ? colors.secondary[500] : colors.secondary[400];
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: bgColor, borderTopColor: borderColor }]}>
       {visibleRoutes.map((route) => {
         const { options } = descriptors[route.key];
         const routeIndex = state.routes.indexOf(route);
@@ -36,10 +41,10 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
           return (
             <View key={route.key} style={styles.addWrapper}>
               {/* White ring */}
-              <View style={styles.addRing}>
+              <View style={[styles.addRing, { backgroundColor: bgColor, outlineColor: bgColor }]}>
                 <Pressable onPress={onPress}>
-                  <View style={styles.addButton}>
-                    <Ionicons name="add" size={28} color="#FFFFFF" />
+                  <View style={isFocused ? [styles.addButtonFocused, { backgroundColor: bgColor }] : styles.addButton}>
+                    <Ionicons name="add" size={28} color={isFocused ? '#FD512E' : '#FFFFFF'} />
                   </View>
                 </Pressable>
               </View>
@@ -47,7 +52,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
           );
         }
 
-        const color = isFocused ? '#FD512E' : '#A0A0A0';
+        const color = isFocused ? '#FD512E' : inactiveColor;
 
         return (
           <Pressable
@@ -71,12 +76,9 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
-    borderTopColor: '#F0F0F0',
     borderTopWidth: 1,
     paddingBottom: 18,
     paddingTop: 18,
-    // height: TAB_BAR_HEIGHT,
     alignItems: 'center',
     position: 'absolute',
     bottom: 0,
@@ -110,11 +112,9 @@ const styles = StyleSheet.create({
     width: ADD_RING_SIZE,
     height: ADD_RING_SIZE,
     borderRadius: ADD_RING_SIZE / 2,
-    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 4,
-    outlineColor: '#FFF',
     outlineStyle: 'solid',
     outlineWidth: 8,
   },
@@ -130,6 +130,19 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.35,
     shadowRadius: 10,
     elevation: 8,
+  },
+  addButtonFocused: {
+    width: ADD_BUTTON_SIZE,
+    height: ADD_BUTTON_SIZE,
+    borderRadius: ADD_BUTTON_SIZE / 2,
+    borderWidth: 2.5,
+    borderColor: '#FD512E',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#FD512E',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 10,
   },
 });
 

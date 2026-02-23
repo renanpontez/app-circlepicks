@@ -41,7 +41,7 @@ export default function TagExploreScreen() {
   };
 
   const handleBookmarkToggle = async (experience: ExperienceFeedItem) => {
-    await toggleBookmark(experience.experience_id, experience.isBookmarked ?? false);
+    await toggleBookmark(experience.experience_id, experience.isBookmarked ?? false, experience.bookmarkId);
   };
 
   const handleLoadMore = () => {

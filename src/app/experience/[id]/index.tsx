@@ -14,8 +14,9 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 
-import { useExperience, useIsBookmarked, useToggleBookmark } from '@/hooks';
+import { useExperience, useToggleBookmark } from '@/hooks';
 import { useAuthStore } from '@/stores';
+import { useTheme } from '@/providers/ThemeProvider';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -24,16 +25,16 @@ export default function ExperienceDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { t } = useTranslation();
   const { user: currentUser } = useAuthStore();
+  const { isDark } = useTheme();
 
   const { data: experience, isLoading, error } = useExperience(id);
-  const { data: bookmarkStatus } = useIsBookmarked(id);
   const { toggle: toggleBookmark, isLoading: bookmarkLoading } = useToggleBookmark();
 
   const [activeImageIndex, setActiveImageIndex] = React.useState(0);
 
   const handleBookmarkToggle = async () => {
-    if (bookmarkLoading) return;
-    await toggleBookmark(id, bookmarkStatus?.isBookmarked ?? false);
+    if (bookmarkLoading || !experience) return;
+    await toggleBookmark(id, experience.isBookmarked ?? false, experience.bookmarkId);
   };
 
   const handleOpenMaps = () => {
@@ -58,7 +59,7 @@ export default function ExperienceDetailScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 bg-white items-center justify-center">
+      <SafeAreaView className="flex-1 bg-white dark:bg-secondary-900 items-center justify-center">
         <ActivityIndicator size="large" color="#FD512E" />
       </SafeAreaView>
     );
@@ -66,9 +67,9 @@ export default function ExperienceDetailScreen() {
 
   if (error || !experience) {
     return (
-      <SafeAreaView className="flex-1 bg-white items-center justify-center px-6">
-        <Ionicons name="alert-circle-outline" size={48} color="#888888" />
-        <Text className="text-medium-grey text-center mt-4">
+      <SafeAreaView className="flex-1 bg-white dark:bg-secondary-900 items-center justify-center px-6">
+        <Ionicons name="alert-circle-outline" size={48} color={isDark ? '#a3a3a3' : '#888888'} />
+        <Text className="text-medium-grey dark:text-secondary-400 text-center mt-4">
           {t('experience.error', 'Failed to load experience')}
         </Text>
         <Pressable
@@ -87,33 +88,33 @@ export default function ExperienceDetailScreen() {
   const images = experience.images || [];
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={['top']}>
+    <SafeAreaView className="flex-1 bg-white dark:bg-secondary-900" edges={['top']}>
       {/* Header */}
       <View className="absolute top-12 left-0 right-0 z-10 flex-row items-center justify-between px-4">
         <Pressable
           onPress={() => router.back()}
-          className="w-10 h-10 bg-white/90 rounded-full items-center justify-center shadow-sm"
+          className="w-10 h-10 bg-white/90 dark:bg-secondary-800/90 rounded-full items-center justify-center shadow-sm"
         >
-          <Ionicons name="arrow-back" size={22} color="#111111" />
+          <Ionicons name="arrow-back" size={22} color={isDark ? '#FFFFFF' : '#111111'} />
         </Pressable>
         <View className="flex-row gap-2">
           {isOwner && (
             <Pressable
               onPress={handleEdit}
-              className="w-10 h-10 bg-white/90 rounded-full items-center justify-center shadow-sm"
+              className="w-10 h-10 bg-white/90 dark:bg-secondary-800/90 rounded-full items-center justify-center shadow-sm"
             >
-              <Ionicons name="pencil" size={20} color="#111111" />
+              <Ionicons name="pencil" size={20} color={isDark ? '#FFFFFF' : '#111111'} />
             </Pressable>
           )}
           <Pressable
             onPress={handleBookmarkToggle}
             disabled={bookmarkLoading}
-            className="w-10 h-10 bg-white/90 rounded-full items-center justify-center shadow-sm"
+            className="w-10 h-10 bg-white/90 dark:bg-secondary-800/90 rounded-full items-center justify-center shadow-sm"
           >
             <Ionicons
-              name={bookmarkStatus?.isBookmarked ? 'bookmark' : 'bookmark-outline'}
+              name={experience?.isBookmarked ? 'bookmark' : 'bookmark-outline'}
               size={22}
-              color={bookmarkStatus?.isBookmarked ? '#FD512E' : '#111111'}
+              color={experience?.isBookmarked ? '#FD512E' : isDark ? '#FFFFFF' : '#111111'}
             />
           </Pressable>
         </View>
@@ -157,8 +158,8 @@ export default function ExperienceDetailScreen() {
               )}
             </>
           ) : (
-            <View className="w-full aspect-[4/3] bg-surface items-center justify-center">
-              <Ionicons name="image-outline" size={64} color="#888888" />
+            <View className="w-full aspect-[4/3] bg-surface dark:bg-secondary-800 items-center justify-center">
+              <Ionicons name="image-outline" size={64} color={isDark ? '#a3a3a3' : '#888888'} />
             </View>
           )}
         </View>
@@ -166,19 +167,19 @@ export default function ExperienceDetailScreen() {
         {/* Content */}
         <View className="px-4 py-5">
           {/* Place Info */}
-          <Text className="text-2xl font-bold text-dark-grey mb-1">
+          <Text className="text-2xl font-bold text-dark-grey dark:text-white mb-1">
             {experience.place.name}
           </Text>
           <View className="flex-row items-center mb-4">
-            <Text className="text-medium-grey">
+            <Text className="text-medium-grey dark:text-secondary-400">
               {experience.place.city}, {experience.place.country}
             </Text>
-            <Text className="text-light-grey mx-2">·</Text>
+            <Text className="text-light-grey dark:text-secondary-500 mx-2">·</Text>
             <Text className="text-primary font-semibold">{experience.price_range}</Text>
             {experience.place.recommendation_count && experience.place.recommendation_count > 1 && (
               <>
-                <Text className="text-light-grey mx-2">·</Text>
-                <Text className="text-light-grey">
+                <Text className="text-light-grey dark:text-secondary-500 mx-2">·</Text>
+                <Text className="text-light-grey dark:text-secondary-500">
                   {experience.place.recommendation_count} {t('common.recs')}
                 </Text>
               </>
@@ -189,8 +190,8 @@ export default function ExperienceDetailScreen() {
           {experience.tags.length > 0 && (
             <View className="flex-row flex-wrap gap-2 mb-5">
               {experience.tags.map((tag) => (
-                <View key={tag.slug} className="bg-chip px-3 py-1.5 rounded-full">
-                  <Text className="text-medium-grey text-sm font-medium">
+                <View key={tag.slug} className="bg-chip dark:bg-secondary-700 px-3 py-1.5 rounded-full">
+                  <Text className="text-medium-grey dark:text-secondary-400 text-sm font-medium">
                     {tag.display_name}
                   </Text>
                 </View>
@@ -201,16 +202,16 @@ export default function ExperienceDetailScreen() {
           {/* User Info */}
           <Pressable
             onPress={() => handleUserPress(experience.user.id)}
-            className="flex-row items-center py-4 border-t border-b border-divider mb-5"
+            className="flex-row items-center py-4 border-t border-b border-divider dark:border-secondary-700 mb-5"
           >
-            <View className="w-10 h-10 rounded-full bg-surface overflow-hidden mr-3">
+            <View className="w-10 h-10 rounded-full bg-surface dark:bg-secondary-800 overflow-hidden mr-3">
               {experience.user.avatar_url ? (
                 <Image
                   source={{ uri: experience.user.avatar_url }}
                   className="w-full h-full"
                 />
               ) : (
-                <View className="w-full h-full items-center justify-center bg-primary-100">
+                <View className="w-full h-full items-center justify-center bg-primary-100 dark:bg-primary-900">
                   <Text className="text-primary font-semibold">
                     {experience.user.display_name.charAt(0).toUpperCase()}
                   </Text>
@@ -218,18 +219,18 @@ export default function ExperienceDetailScreen() {
               )}
             </View>
             <View className="flex-1">
-              <Text className="text-dark-grey font-medium">
+              <Text className="text-dark-grey dark:text-white font-medium">
                 {experience.user.display_name}
               </Text>
-              <Text className="text-light-grey text-sm">{experience.time_ago}</Text>
+              <Text className="text-light-grey dark:text-secondary-500 text-sm">{experience.time_ago}</Text>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#888888" />
+            <Ionicons name="chevron-forward" size={20} color={isDark ? '#a3a3a3' : '#888888'} />
           </Pressable>
 
           {/* Description */}
           {experience.brief_description && (
             <View className="mb-5">
-              <Text className="text-dark-grey leading-6">
+              <Text className="text-dark-grey dark:text-white leading-6">
                 "{experience.brief_description}"
               </Text>
             </View>
@@ -239,29 +240,29 @@ export default function ExperienceDetailScreen() {
           {(experience.place.lat || experience.place.google_maps_url) && (
             <Pressable
               onPress={handleOpenMaps}
-              className="flex-row items-center bg-surface py-4 px-4 rounded-xl mb-5"
+              className="flex-row items-center bg-surface dark:bg-secondary-800 py-4 px-4 rounded-xl mb-5"
             >
-              <View className="w-10 h-10 bg-white rounded-full items-center justify-center mr-3">
+              <View className="w-10 h-10 bg-white dark:bg-secondary-700 rounded-full items-center justify-center mr-3">
                 <Ionicons name="map" size={20} color="#FD512E" />
               </View>
               <View className="flex-1">
-                <Text className="text-dark-grey font-medium">
+                <Text className="text-dark-grey dark:text-white font-medium">
                   {t('experience.openMaps', 'Open in Maps')}
                 </Text>
                 {experience.place.address && (
-                  <Text className="text-medium-grey text-sm" numberOfLines={1}>
+                  <Text className="text-medium-grey dark:text-secondary-400 text-sm" numberOfLines={1}>
                     {experience.place.address}
                   </Text>
                 )}
               </View>
-              <Ionicons name="open-outline" size={20} color="#888888" />
+              <Ionicons name="open-outline" size={20} color={isDark ? '#a3a3a3' : '#888888'} />
             </Pressable>
           )}
 
           {/* Other Recommenders */}
           {experience.other_recommenders && experience.other_recommenders.length > 0 && (
             <View className="mt-2">
-              <Text className="text-dark-grey font-semibold mb-3">
+              <Text className="text-dark-grey dark:text-white font-semibold mb-3">
                 {t('experience.alsoRecommended', 'Also recommended by')}
               </Text>
               <View className="flex-row flex-wrap gap-2">
@@ -269,9 +270,9 @@ export default function ExperienceDetailScreen() {
                   <Pressable
                     key={recommender.id}
                     onPress={() => handleUserPress(recommender.id)}
-                    className="flex-row items-center bg-surface px-3 py-2 rounded-full"
+                    className="flex-row items-center bg-surface dark:bg-secondary-800 px-3 py-2 rounded-full"
                   >
-                    <View className="w-6 h-6 rounded-full bg-primary-100 mr-2 overflow-hidden">
+                    <View className="w-6 h-6 rounded-full bg-primary-100 dark:bg-primary-900 mr-2 overflow-hidden">
                       {recommender.avatar_url ? (
                         <Image
                           source={{ uri: recommender.avatar_url }}
@@ -285,7 +286,7 @@ export default function ExperienceDetailScreen() {
                         </View>
                       )}
                     </View>
-                    <Text className="text-dark-grey text-sm font-medium">
+                    <Text className="text-dark-grey dark:text-white text-sm font-medium">
                       {recommender.display_name}
                     </Text>
                   </Pressable>

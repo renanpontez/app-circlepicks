@@ -19,6 +19,8 @@ import { usePlaceSearchWithLocation, useLocation, useCreateExperience } from '@/
 import { TagInput } from '@/components';
 import { toast } from '@/stores';
 import { uploadImages } from '@/utils/uploadImages';
+import { useTheme } from '@/providers/ThemeProvider';
+import { TabScrollView } from '@/components/ui/TabScrollView';
 import type { PlaceSearchResult, PriceRange, ExperienceVisibility } from '@/domain/models';
 
 type Step = 'place' | 'details';
@@ -28,6 +30,7 @@ const PRICE_RANGES: PriceRange[] = ['$', '$$', '$$$', '$$$$'];
 export default function AddExperienceScreen() {
   const router = useRouter();
   const { t } = useTranslation();
+  const { isDark } = useTheme();
 
   const [step, setStep] = useState<Step>('place');
   const [searchQuery, setSearchQuery] = useState('');
@@ -170,9 +173,9 @@ export default function AddExperienceScreen() {
   const renderPlaceStep = () => (
     <View className="flex-1">
       {/* Location Info */}
-      <View className="flex-row items-center px-4 py-3 bg-white border-b border-divider">
+      <View className="flex-row items-center px-4 py-3 bg-white dark:bg-secondary-900 border-b border-divider dark:border-secondary-700">
         <Ionicons name="location" size={20} color="#FD512E" />
-        <Text className="text-medium-grey ml-2 flex-1">
+        <Text className="text-medium-grey dark:text-secondary-400 ml-2 flex-1">
           {locationLoading
             ? t('add.location.loading', 'Getting location...')
             : city
@@ -180,32 +183,32 @@ export default function AddExperienceScreen() {
             : t('add.location.unknown', 'Location unavailable')}
         </Text>
         <Pressable onPress={getCurrentLocation} className="p-2">
-          <Ionicons name="refresh" size={20} color="#888888" />
+          <Ionicons name="refresh" size={20} color={isDark ? '#a3a3a3' : '#888888'} />
         </Pressable>
       </View>
 
       {/* Search Input */}
       <View className="p-4">
-        <View className="flex-row items-center bg-surface border border-divider rounded-xl px-4">
-          <Ionicons name="search" size={20} color="#888888" />
+        <View className="flex-row items-center bg-surface dark:bg-secondary-800 border border-divider dark:border-secondary-700 rounded-xl px-4">
+          <Ionicons name="search" size={20} color={isDark ? '#a3a3a3' : '#888888'} />
           <TextInput
-            className="flex-1 py-3 px-2 text-dark-grey"
+            className="flex-1 py-3 px-2 text-dark-grey dark:text-white"
             placeholder={t('add.search.placeholder', 'Search for a place...')}
-            placeholderTextColor="#888888"
+            placeholderTextColor={isDark ? '#737373' : '#888888'}
             value={searchQuery}
             onChangeText={handleSearchChange}
             autoFocus
           />
           {searchQuery.length > 0 && (
             <Pressable onPress={() => handleSearchChange('')}>
-              <Ionicons name="close-circle" size={20} color="#888888" />
+              <Ionicons name="close-circle" size={20} color={isDark ? '#a3a3a3' : '#888888'} />
             </Pressable>
           )}
         </View>
       </View>
 
       {/* Search Results */}
-      <ScrollView className="flex-1 px-4">
+      <TabScrollView className="flex-1 px-4" keyboardShouldPersistTaps="handled">
         {searchLoading ? (
           <View className="py-8 items-center">
             <ActivityIndicator color="#FD512E" />
@@ -215,64 +218,65 @@ export default function AddExperienceScreen() {
             <Pressable
               key={`${place.google_place_id || place.id}-${index}`}
               onPress={() => handlePlaceSelect(place)}
-              className="flex-row items-center py-3 border-b border-divider active:bg-surface"
+              className="flex-row items-center py-3 border-b border-divider dark:border-secondary-700 active:bg-surface dark:active:bg-secondary-700"
             >
-              <View className="w-10 h-10 bg-primary-100 rounded-lg items-center justify-center mr-3">
+              <View className="w-10 h-10 bg-primary-100 dark:bg-primary-900 rounded-lg items-center justify-center mr-3">
                 <Ionicons name="location" size={20} color="#FD512E" />
               </View>
               <View className="flex-1">
-                <Text className="text-dark-grey font-medium" numberOfLines={1}>
+                <Text className="text-dark-grey dark:text-white font-medium" numberOfLines={1}>
                   {place.name}
                 </Text>
-                <Text className="text-medium-grey text-sm" numberOfLines={1}>
+                <Text className="text-medium-grey dark:text-secondary-400 text-sm" numberOfLines={1}>
                   {place.address || `${place.city}, ${place.country}`}
                 </Text>
               </View>
-              {place.source === 'local' && (
-                <View className="bg-primary-100 px-2 py-1 rounded">
-                  <Text className="text-primary text-xs font-medium">
-                    {place.recommendation_count} recs
+              {place.source === 'local' && place.recommendation_count > 0 && (
+                <View className="flex-row items-center bg-primary-100 dark:bg-primary-900 px-2 py-1 rounded">
+                  <Ionicons name="repeat" size={14} color="#FD512E" />
+                  <Text className="text-primary text-xs font-medium ml-1">
+                    {place.recommendation_count}
                   </Text>
                 </View>
               )}
             </Pressable>
           ))
         ) : searchQuery.length >= 2 ? (
-          <Text className="text-medium-grey text-center py-8">
+          <Text className="text-medium-grey dark:text-secondary-400 text-center py-8">
             {t('add.search.noResults', 'No places found')}
           </Text>
         ) : (
-          <Text className="text-medium-grey text-center py-8">
+          <Text className="text-medium-grey dark:text-secondary-400 text-center py-8">
             {t('add.search.hint', 'Type at least 2 characters to search')}
           </Text>
         )}
-      </ScrollView>
+      </TabScrollView>
     </View>
   );
 
   const renderDetailsStep = () => (
-    <ScrollView className="flex-1" keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: 80 }}>
+    <TabScrollView className="flex-1" keyboardShouldPersistTaps="handled">
       {/* Selected Place */}
-      <View className="bg-white p-4 border-b border-divider">
+      <View className="bg-white dark:bg-secondary-900 p-4 border-b border-divider dark:border-secondary-700">
         <View className="flex-row items-center">
-          <View className="w-12 h-12 bg-primary-100 rounded-xl items-center justify-center mr-3">
+          <View className="w-12 h-12 bg-primary-100 dark:bg-primary-900 rounded-xl items-center justify-center mr-3">
             <Ionicons name="location" size={24} color="#FD512E" />
           </View>
           <View className="flex-1">
-            <Text className="text-lg font-bold text-dark-grey">{selectedPlace?.name}</Text>
-            <Text className="text-medium-grey">
+            <Text className="text-lg font-bold text-dark-grey dark:text-white">{selectedPlace?.name}</Text>
+            <Text className="text-medium-grey dark:text-secondary-400">
               {selectedPlace?.city}, {selectedPlace?.country}
             </Text>
           </View>
           <Pressable onPress={() => setStep('place')} className="p-2">
-            <Ionicons name="pencil" size={20} color="#888888" />
+            <Ionicons name="pencil" size={20} color={isDark ? '#a3a3a3' : '#888888'} />
           </Pressable>
         </View>
       </View>
 
       {/* Price Range */}
-      <View className="bg-white p-4 border-b border-divider">
-        <Text className="text-dark-grey font-semibold mb-3">
+      <View className="bg-white dark:bg-secondary-900 p-4 border-b border-divider dark:border-secondary-700">
+        <Text className="text-dark-grey dark:text-white font-semibold mb-3">
           {t('add.priceRange.title', 'Price Range')}
         </Text>
         <View className="flex-row gap-2">
@@ -280,13 +284,13 @@ export default function AddExperienceScreen() {
             <Pressable
               key={price}
               onPress={() => setPriceRange(price)}
-              className={`flex-1 py-3 rounded-xl items-center ${
-                priceRange === price ? 'bg-primary' : 'bg-surface border border-divider'
+              className={`flex-1 py-3 rounded-full items-center ${
+                priceRange === price ? 'bg-primary' : 'bg-surface dark:bg-secondary-800 border border-divider dark:border-secondary-700'
               }`}
             >
               <Text
                 className={`font-semibold ${
-                  priceRange === price ? 'text-white' : 'text-dark-grey'
+                  priceRange === price ? 'text-white' : 'text-dark-grey dark:text-white'
                 }`}
               >
                 {price}
@@ -304,10 +308,10 @@ export default function AddExperienceScreen() {
       />
 
       {/* Images */}
-      <View className="bg-white p-4 border-b border-divider">
-        <Text className="text-dark-grey font-semibold mb-3">
+      <View className="bg-white dark:bg-secondary-900 p-4 border-b border-divider dark:border-secondary-700">
+        <Text className="text-dark-grey dark:text-white font-semibold mb-3">
           {t('add.images.title', 'Photos')}
-          <Text className="text-light-grey font-normal"> ({images.length}/5)</Text>
+          <Text className="text-light-grey dark:text-secondary-500 font-normal"> ({images.length}/5)</Text>
         </Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <View className="flex-row gap-2">
@@ -326,15 +330,15 @@ export default function AddExperienceScreen() {
               <>
                 <Pressable
                   onPress={handleImagePick}
-                  className="w-20 h-20 bg-surface border border-dashed border-divider rounded-xl items-center justify-center"
+                  className="w-20 h-20 bg-surface dark:bg-secondary-800 border border-dashed border-divider dark:border-secondary-700 rounded-xl items-center justify-center"
                 >
-                  <Ionicons name="images-outline" size={24} color="#888888" />
+                  <Ionicons name="images-outline" size={24} color={isDark ? '#a3a3a3' : '#888888'} />
                 </Pressable>
                 <Pressable
                   onPress={handleCameraCapture}
-                  className="w-20 h-20 bg-surface border border-dashed border-divider rounded-xl items-center justify-center"
+                  className="w-20 h-20 bg-surface dark:bg-secondary-800 border border-dashed border-divider dark:border-secondary-700 rounded-xl items-center justify-center"
                 >
-                  <Ionicons name="camera-outline" size={24} color="#888888" />
+                  <Ionicons name="camera-outline" size={24} color={isDark ? '#a3a3a3' : '#888888'} />
                 </Pressable>
               </>
             )}
@@ -343,14 +347,14 @@ export default function AddExperienceScreen() {
       </View>
 
       {/* Description */}
-      <View className="bg-white p-4 border-b border-divider">
-        <Text className="text-dark-grey font-semibold mb-3">
+      <View className="bg-white dark:bg-secondary-900 p-4 border-b border-divider dark:border-secondary-700">
+        <Text className="text-dark-grey dark:text-white font-semibold mb-3">
           {t('add.description.title', 'Note (optional)')}
         </Text>
         <TextInput
-          className="bg-surface border border-divider rounded-xl px-4 py-3 text-dark-grey min-h-[80px]"
+          className="bg-surface dark:bg-secondary-800 border border-divider dark:border-secondary-700 rounded-xl px-4 py-3 text-dark-grey dark:text-white min-h-[80px]"
           placeholder={t('add.description.placeholder', 'Share what makes this place special...')}
-          placeholderTextColor="#888888"
+          placeholderTextColor={isDark ? '#737373' : '#888888'}
           value={description}
           onChangeText={setDescription}
           multiline
@@ -359,25 +363,25 @@ export default function AddExperienceScreen() {
       </View>
 
       {/* Visibility */}
-      <View className="bg-white p-4 border-b border-divider">
-        <Text className="text-dark-grey font-semibold mb-3">
+      <View className="bg-white dark:bg-secondary-900 p-4 border-b border-divider dark:border-secondary-700">
+        <Text className="text-dark-grey dark:text-white font-semibold mb-3">
           {t('add.visibility.title', 'Who can see this?')}
         </Text>
         <View className="flex-row gap-2">
           <Pressable
             onPress={() => setVisibility('public')}
-            className={`flex-1 flex-row items-center justify-center py-3 rounded-xl ${
-              visibility === 'public' ? 'bg-primary' : 'bg-surface border border-divider'
+            className={`flex-1 flex-row items-center justify-center py-3 rounded-full ${
+              visibility === 'public' ? 'bg-primary' : 'bg-surface dark:bg-secondary-800 border border-divider dark:border-secondary-700'
             }`}
           >
             <Ionicons
               name="globe-outline"
               size={18}
-              color={visibility === 'public' ? '#FFFFFF' : '#111111'}
+              color={visibility === 'public' ? '#FFFFFF' : isDark ? '#FFFFFF' : '#111111'}
             />
             <Text
               className={`ml-2 font-medium ${
-                visibility === 'public' ? 'text-white' : 'text-dark-grey'
+                visibility === 'public' ? 'text-white' : 'text-dark-grey dark:text-white'
               }`}
             >
               {t('add.visibility.public', 'Public')}
@@ -385,18 +389,18 @@ export default function AddExperienceScreen() {
           </Pressable>
           <Pressable
             onPress={() => setVisibility('friends_only')}
-            className={`flex-1 flex-row items-center justify-center py-3 rounded-xl ${
-              visibility === 'friends_only' ? 'bg-primary' : 'bg-surface border border-divider'
+            className={`flex-1 flex-row items-center justify-center py-3 rounded-full ${
+              visibility === 'friends_only' ? 'bg-primary' : 'bg-surface dark:bg-secondary-800 border border-divider dark:border-secondary-700'
             }`}
           >
             <Ionicons
               name="people-outline"
               size={18}
-              color={visibility === 'friends_only' ? '#FFFFFF' : '#111111'}
+              color={visibility === 'friends_only' ? '#FFFFFF' : isDark ? '#FFFFFF' : '#111111'}
             />
             <Text
               className={`ml-2 font-medium ${
-                visibility === 'friends_only' ? 'text-white' : 'text-dark-grey'
+                visibility === 'friends_only' ? 'text-white' : 'text-dark-grey dark:text-white'
               }`}
             >
               {t('add.visibility.friends', 'Friends')}
@@ -410,9 +414,9 @@ export default function AddExperienceScreen() {
         <Pressable
           onPress={handleSubmit}
           disabled={isSaving || selectedTags.length === 0}
-          className={`py-4 rounded-xl items-center ${
+          className={`py-4 rounded-full items-center ${
             isSaving || selectedTags.length === 0
-              ? 'bg-surface'
+              ? 'bg-surface dark:bg-secondary-800'
               : 'bg-primary active:bg-primary-600'
           }`}
         >
@@ -421,7 +425,7 @@ export default function AddExperienceScreen() {
           ) : (
             <Text
               className={`font-semibold text-lg ${
-                selectedTags.length === 0 ? 'text-light-grey' : 'text-white'
+                selectedTags.length === 0 ? 'text-light-grey dark:text-secondary-600' : 'text-white'
               }`}
             >
               {t('add.submit', 'Save Experience')}
@@ -429,17 +433,17 @@ export default function AddExperienceScreen() {
           )}
         </Pressable>
       </View>
-    </ScrollView>
+    </TabScrollView>
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={['top']}>
+    <SafeAreaView className="flex-1 bg-white dark:bg-secondary-900" edges={['top']}>
       {/* Header */}
-      <View className="flex-row items-center justify-between px-4 py-3 border-b border-divider">
+      <View className="flex-row items-center justify-between px-4 py-3 border-b border-divider dark:border-secondary-700">
         <Pressable onPress={() => router.back()} className="p-2 -ml-2">
-          <Ionicons name="close" size={24} color="#111111" />
+          <Ionicons name="close" size={24} color={isDark ? '#FFFFFF' : '#111111'} />
         </Pressable>
-        <Text className="text-lg font-bold text-dark-grey">
+        <Text className="text-lg font-bold text-dark-grey dark:text-white">
           {t('add.title', 'Add Experience')}
         </Text>
         <View className="w-10" />

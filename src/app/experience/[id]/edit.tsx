@@ -18,6 +18,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useExperience, useUpdateExperience, useDeleteExperience } from '@/hooks';
 import { TagInput } from '@/components';
 import { useAuthStore, toast } from '@/stores';
+import { useTheme } from '@/providers/ThemeProvider';
 import { uploadImages } from '@/utils/uploadImages';
 import type { PriceRange, ExperienceVisibility } from '@/domain/models';
 
@@ -28,6 +29,7 @@ export default function EditExperienceScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { t } = useTranslation();
   const { user: currentUser } = useAuthStore();
+  const { isDark } = useTheme();
 
   const { data: experience, isLoading } = useExperience(id);
   const updateExperience = useUpdateExperience(id);
@@ -136,7 +138,7 @@ export default function EditExperienceScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 bg-white items-center justify-center">
+      <SafeAreaView className="flex-1 bg-white dark:bg-secondary-900 items-center justify-center">
         <ActivityIndicator size="large" color="#FD512E" />
       </SafeAreaView>
     );
@@ -144,9 +146,9 @@ export default function EditExperienceScreen() {
 
   if (!experience) {
     return (
-      <SafeAreaView className="flex-1 bg-white items-center justify-center px-6">
-        <Ionicons name="alert-circle-outline" size={48} color="#888888" />
-        <Text className="text-medium-grey text-center mt-4">
+      <SafeAreaView className="flex-1 bg-white dark:bg-secondary-900 items-center justify-center px-6">
+        <Ionicons name="alert-circle-outline" size={48} color={isDark ? '#a3a3a3' : '#888888'} />
+        <Text className="text-medium-grey dark:text-secondary-400 text-center mt-4">
           {t('experience.error', 'Failed to load experience')}
         </Text>
         <Pressable onPress={() => router.back()} className="mt-4 bg-primary px-6 py-3 rounded-xl">
@@ -157,13 +159,13 @@ export default function EditExperienceScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={['top']}>
+    <SafeAreaView className="flex-1 bg-white dark:bg-secondary-900" edges={['top']}>
       {/* Header */}
-      <View className="flex-row items-center justify-between px-4 py-3 border-b border-divider">
+      <View className="flex-row items-center justify-between px-4 py-3 border-b border-divider dark:border-secondary-700">
         <Pressable onPress={() => router.back()} className="p-2 -ml-2">
-          <Ionicons name="close" size={24} color="#111111" />
+          <Ionicons name="close" size={24} color={isDark ? '#FFFFFF' : '#111111'} />
         </Pressable>
-        <Text className="text-lg font-bold text-dark-grey">
+        <Text className="text-lg font-bold text-dark-grey dark:text-white">
           {t('experience.edit.title', 'Edit Experience')}
         </Text>
         <Pressable onPress={handleDelete} className="p-2 -mr-2">
@@ -173,14 +175,14 @@ export default function EditExperienceScreen() {
 
       <ScrollView className="flex-1" keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: 40 }}>
         {/* Place Info (read-only) */}
-        <View className="bg-surface p-4 border-b border-divider">
+        <View className="bg-surface dark:bg-secondary-800 p-4 border-b border-divider dark:border-secondary-700">
           <View className="flex-row items-center">
-            <View className="w-12 h-12 bg-primary-100 rounded-xl items-center justify-center mr-3">
+            <View className="w-12 h-12 bg-primary-100 dark:bg-primary-900 rounded-xl items-center justify-center mr-3">
               <Ionicons name="location" size={24} color="#FD512E" />
             </View>
             <View className="flex-1">
-              <Text className="text-lg font-bold text-dark-grey">{experience.place.name}</Text>
-              <Text className="text-medium-grey">
+              <Text className="text-lg font-bold text-dark-grey dark:text-white">{experience.place.name}</Text>
+              <Text className="text-medium-grey dark:text-secondary-400">
                 {experience.place.city}, {experience.place.country}
               </Text>
             </View>
@@ -188,8 +190,8 @@ export default function EditExperienceScreen() {
         </View>
 
         {/* Price Range */}
-        <View className="bg-white p-4 border-b border-divider">
-          <Text className="text-dark-grey font-semibold mb-3">
+        <View className="bg-white dark:bg-secondary-900 p-4 border-b border-divider dark:border-secondary-700">
+          <Text className="text-dark-grey dark:text-white font-semibold mb-3">
             {t('add.priceRange.title', 'Price Range')}
           </Text>
           <View className="flex-row gap-2">
@@ -198,12 +200,12 @@ export default function EditExperienceScreen() {
                 key={price}
                 onPress={() => setPriceRange(price)}
                 className={`flex-1 py-3 rounded-xl items-center ${
-                  priceRange === price ? 'bg-primary' : 'bg-surface border border-divider'
+                  priceRange === price ? 'bg-primary' : 'bg-surface dark:bg-secondary-800 border border-divider dark:border-secondary-700'
                 }`}
               >
                 <Text
                   className={`font-semibold ${
-                    priceRange === price ? 'text-white' : 'text-dark-grey'
+                    priceRange === price ? 'text-white' : 'text-dark-grey dark:text-white'
                   }`}
                 >
                   {price}
@@ -221,10 +223,10 @@ export default function EditExperienceScreen() {
         />
 
         {/* Images */}
-        <View className="bg-white p-4 border-b border-divider">
-          <Text className="text-dark-grey font-semibold mb-3">
+        <View className="bg-white dark:bg-secondary-900 p-4 border-b border-divider dark:border-secondary-700">
+          <Text className="text-dark-grey dark:text-white font-semibold mb-3">
             {t('add.images.title', 'Photos')}
-            <Text className="text-light-grey font-normal"> ({images.length}/5)</Text>
+            <Text className="text-light-grey dark:text-secondary-500 font-normal"> ({images.length}/5)</Text>
           </Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View className="flex-row gap-2">
@@ -242,9 +244,9 @@ export default function EditExperienceScreen() {
               {images.length < 5 && (
                 <Pressable
                   onPress={handleImagePick}
-                  className="w-20 h-20 bg-surface border border-dashed border-divider rounded-xl items-center justify-center"
+                  className="w-20 h-20 bg-surface dark:bg-secondary-800 border border-dashed border-divider dark:border-secondary-700 rounded-xl items-center justify-center"
                 >
-                  <Ionicons name="add" size={24} color="#888888" />
+                  <Ionicons name="add" size={24} color={isDark ? '#a3a3a3' : '#888888'} />
                 </Pressable>
               )}
             </View>
@@ -252,14 +254,14 @@ export default function EditExperienceScreen() {
         </View>
 
         {/* Description */}
-        <View className="bg-white p-4 border-b border-divider">
-          <Text className="text-dark-grey font-semibold mb-3">
+        <View className="bg-white dark:bg-secondary-900 p-4 border-b border-divider dark:border-secondary-700">
+          <Text className="text-dark-grey dark:text-white font-semibold mb-3">
             {t('add.description.title', 'Note (optional)')}
           </Text>
           <TextInput
-            className="bg-surface border border-divider rounded-xl px-4 py-3 text-dark-grey min-h-[80px]"
+            className="bg-surface dark:bg-secondary-800 border border-divider dark:border-secondary-700 rounded-xl px-4 py-3 text-dark-grey dark:text-white min-h-[80px]"
             placeholder={t('add.description.placeholder', 'Share what makes this place special...')}
-            placeholderTextColor="#888888"
+            placeholderTextColor={isDark ? '#737373' : '#888888'}
             value={description}
             onChangeText={setDescription}
             multiline
@@ -268,25 +270,25 @@ export default function EditExperienceScreen() {
         </View>
 
         {/* Visibility */}
-        <View className="bg-white p-4 border-b border-divider">
-          <Text className="text-dark-grey font-semibold mb-3">
+        <View className="bg-white dark:bg-secondary-900 p-4 border-b border-divider dark:border-secondary-700">
+          <Text className="text-dark-grey dark:text-white font-semibold mb-3">
             {t('add.visibility.title', 'Who can see this?')}
           </Text>
           <View className="flex-row gap-2">
             <Pressable
               onPress={() => setVisibility('public')}
               className={`flex-1 flex-row items-center justify-center py-3 rounded-xl ${
-                visibility === 'public' ? 'bg-primary' : 'bg-surface border border-divider'
+                visibility === 'public' ? 'bg-primary' : 'bg-surface dark:bg-secondary-800 border border-divider dark:border-secondary-700'
               }`}
             >
               <Ionicons
                 name="globe-outline"
                 size={18}
-                color={visibility === 'public' ? '#FFFFFF' : '#111111'}
+                color={visibility === 'public' ? '#FFFFFF' : isDark ? '#FFFFFF' : '#111111'}
               />
               <Text
                 className={`ml-2 font-medium ${
-                  visibility === 'public' ? 'text-white' : 'text-dark-grey'
+                  visibility === 'public' ? 'text-white' : 'text-dark-grey dark:text-white'
                 }`}
               >
                 {t('add.visibility.public', 'Public')}
@@ -295,17 +297,17 @@ export default function EditExperienceScreen() {
             <Pressable
               onPress={() => setVisibility('friends_only')}
               className={`flex-1 flex-row items-center justify-center py-3 rounded-xl ${
-                visibility === 'friends_only' ? 'bg-primary' : 'bg-surface border border-divider'
+                visibility === 'friends_only' ? 'bg-primary' : 'bg-surface dark:bg-secondary-800 border border-divider dark:border-secondary-700'
               }`}
             >
               <Ionicons
                 name="people-outline"
                 size={18}
-                color={visibility === 'friends_only' ? '#FFFFFF' : '#111111'}
+                color={visibility === 'friends_only' ? '#FFFFFF' : isDark ? '#FFFFFF' : '#111111'}
               />
               <Text
                 className={`ml-2 font-medium ${
-                  visibility === 'friends_only' ? 'text-white' : 'text-dark-grey'
+                  visibility === 'friends_only' ? 'text-white' : 'text-dark-grey dark:text-white'
                 }`}
               >
                 {t('add.visibility.friends', 'Friends')}
@@ -321,7 +323,7 @@ export default function EditExperienceScreen() {
             disabled={isSaving || selectedTags.length === 0}
             className={`py-4 rounded-xl items-center ${
               isSaving || selectedTags.length === 0
-                ? 'bg-surface'
+                ? 'bg-surface dark:bg-secondary-800'
                 : 'bg-primary active:bg-primary-600'
             }`}
           >
@@ -330,7 +332,7 @@ export default function EditExperienceScreen() {
             ) : (
               <Text
                 className={`font-semibold text-lg ${
-                  selectedTags.length === 0 ? 'text-light-grey' : 'text-white'
+                  selectedTags.length === 0 ? 'text-light-grey dark:text-secondary-600' : 'text-white'
                 }`}
               >
                 {t('common.save', 'Save Changes')}
