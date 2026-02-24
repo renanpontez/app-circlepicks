@@ -90,7 +90,7 @@ export default function TagExploreScreen() {
           </Text>
           {data?.pages[0]?.total && (
             <Text className="text-medium-grey text-sm">
-              {data.pages[0].total} {t('explore.tag.places', 'places')}
+              {data.pages[0].total} {t('explore.tag.places', 'experiences')}
             </Text>
           )}
         </View>
@@ -110,7 +110,7 @@ export default function TagExploreScreen() {
           <View className="items-center py-12 px-6">
             <Ionicons name="pricetag-outline" size={48} color="#888888" />
             <Text className="text-medium-grey text-center mt-4">
-              {t('explore.tag.empty', 'No places found with this tag')}
+              {t('explore.tag.empty', 'No experiences found with this tag')}
             </Text>
           </View>
         }

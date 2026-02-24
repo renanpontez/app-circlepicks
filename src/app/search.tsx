@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, TextInput, ScrollView, Pressable, Image, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, ScrollView, Pressable, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +10,7 @@ import debounce from 'lodash.debounce';
 import { getHttpClient } from '@/core/config';
 import { API_ENDPOINTS } from '@/data/api/endpoints';
 import { useTheme } from '@/providers/ThemeProvider';
+import { CachedImage } from '@/components/ui/CachedImage';
 import type { ExperienceFeedItem, User, PlaceSearchResult } from '@/domain/models';
 
 interface SearchResults {
@@ -87,7 +88,7 @@ export default function SearchScreen() {
           <Ionicons name="search" size={20} color={isDark ? '#a3a3a3' : '#888888'} />
           <TextInput
             className="flex-1 py-3 px-2 text-dark-grey dark:text-white"
-            placeholder={t('search.placeholder', 'Search places, users...')}
+            placeholder={t('search.placeholder', 'Search experiences, users...')}
             placeholderTextColor={isDark ? '#737373' : '#888888'}
             value={query}
             onChangeText={handleQueryChange}
@@ -111,7 +112,7 @@ export default function SearchScreen() {
           <View className="items-center py-12 px-6">
             <Ionicons name="search" size={48} color={isDark ? '#404040' : '#E4E6EA'} />
             <Text className="text-medium-grey dark:text-secondary-400 text-center mt-4">
-              {t('search.hint', 'Search for places, restaurants, or people')}
+              {t('search.hint', 'Search for experiences, restaurants, or people')}
             </Text>
           </View>
         ) : !hasResults ? (
@@ -140,7 +141,7 @@ export default function SearchScreen() {
                   >
                     <View className="w-10 h-10 rounded-full bg-surface dark:bg-secondary-800 overflow-hidden mr-3">
                       {user.avatar_url ? (
-                        <Image source={{ uri: user.avatar_url }} className="w-full h-full" />
+                        <CachedImage source={user.avatar_url} style={{ width: '100%', height: '100%' }} recyclingKey={user.id} />
                       ) : (
                         <View className="w-full h-full items-center justify-center bg-primary-100 dark:bg-primary-900">
                           <Text className="text-primary font-semibold">
@@ -162,7 +163,7 @@ export default function SearchScreen() {
             {(data.places?.length ?? 0) > 0 && (
               <View className="mb-4">
                 <Text className="text-light-grey dark:text-secondary-500 text-sm font-medium px-4 py-2 bg-surface dark:bg-secondary-800">
-                  {t('search.sections.places', 'PLACES')}
+                  {t('search.sections.places', 'EXPERIENCES')}
                 </Text>
                 {data.places.map((place, index) => (
                   <Pressable
@@ -207,9 +208,9 @@ export default function SearchScreen() {
                   >
                     <View className="w-12 h-12 bg-surface dark:bg-secondary-800 rounded-lg overflow-hidden mr-3">
                       {experience.place.thumbnail_image_url ? (
-                        <Image
-                          source={{ uri: experience.place.thumbnail_image_url }}
-                          className="w-full h-full"
+                        <CachedImage
+                          source={experience.place.thumbnail_image_url}
+                          style={{ width: '100%', height: '100%' }}
                         />
                       ) : (
                         <View className="w-full h-full items-center justify-center">

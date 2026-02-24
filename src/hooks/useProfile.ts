@@ -11,6 +11,23 @@ interface UpdateProfileRequest {
   bio?: string;
 }
 
+// Transform nested API response { user, experiences, stats } into flat UserProfile
+function transformProfileResponse(data: any): UserProfile {
+  return {
+    id: data.user.id,
+    display_name: data.user.display_name,
+    username: data.user.username,
+    avatar_url: data.user.avatar_url,
+    bio: data.user.bio ?? null,
+    created_at: data.user.created_at ?? '',
+    stats: {
+      experiences_count: data.stats?.suggestions ?? 0,
+      followers_count: data.stats?.followers ?? 0,
+      following_count: data.stats?.following ?? 0,
+    },
+  } as UserProfile;
+}
+
 // Hook for fetching current user's profile
 export function useMyProfile() {
   const httpClient = getHttpClient();
@@ -19,8 +36,8 @@ export function useMyProfile() {
   return useQuery({
     queryKey: ['profile', 'me'],
     queryFn: async () => {
-      const response = await httpClient.get<UserProfile>(API_ENDPOINTS.profile.me);
-      return response.data;
+      const response = await httpClient.get<any>(API_ENDPOINTS.profile.me);
+      return transformProfileResponse(response.data);
     },
     enabled: isAuthenticated,
   });
@@ -33,10 +50,10 @@ export function useUserProfile(userId: string, options?: { enabled?: boolean }) 
   return useQuery({
     queryKey: ['profile', userId],
     queryFn: async () => {
-      const response = await httpClient.get<UserProfile>(
+      const response = await httpClient.get<any>(
         API_ENDPOINTS.profile.byId(userId)
       );
-      return response.data;
+      return transformProfileResponse(response.data);
     },
     enabled: !!userId && (options?.enabled ?? true),
   });

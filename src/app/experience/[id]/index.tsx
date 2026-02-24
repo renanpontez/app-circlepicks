@@ -4,19 +4,20 @@ import {
   Text,
   ScrollView,
   Pressable,
-  Image,
   ActivityIndicator,
   Linking,
   Dimensions,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 
-import { useExperience, useToggleBookmark } from '@/hooks';
+import { useExperience, useToggleBookmark, usePlaceExperiences } from '@/hooks';
 import { useAuthStore } from '@/stores';
 import { useTheme } from '@/providers/ThemeProvider';
+import { ExperienceCard } from '@/components/ExperienceCard';
+import { CachedImage } from '@/components/ui/CachedImage';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -26,9 +27,16 @@ export default function ExperienceDetailScreen() {
   const { t } = useTranslation();
   const { user: currentUser } = useAuthStore();
   const { isDark } = useTheme();
+  const insets = useSafeAreaInsets();
 
   const { data: experience, isLoading, error } = useExperience(id);
   const { toggle: toggleBookmark, isLoading: bookmarkLoading } = useToggleBookmark();
+
+  const { data: placeExperiences } = usePlaceExperiences(
+    experience?.place.id ?? '',
+    id,
+    { enabled: !!experience }
+  );
 
   const [activeImageIndex, setActiveImageIndex] = React.useState(0);
 
@@ -59,15 +67,15 @@ export default function ExperienceDetailScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 bg-white dark:bg-secondary-900 items-center justify-center">
+      <View className="flex-1 bg-white dark:bg-secondary-900 items-center justify-center">
         <ActivityIndicator size="large" color="#FD512E" />
-      </SafeAreaView>
+      </View>
     );
   }
 
   if (error || !experience) {
     return (
-      <SafeAreaView className="flex-1 bg-white dark:bg-secondary-900 items-center justify-center px-6">
+      <View className="flex-1 bg-white dark:bg-secondary-900 items-center justify-center px-6">
         <Ionicons name="alert-circle-outline" size={48} color={isDark ? '#a3a3a3' : '#888888'} />
         <Text className="text-medium-grey dark:text-secondary-400 text-center mt-4">
           {t('experience.error', 'Failed to load experience')}
@@ -80,7 +88,7 @@ export default function ExperienceDetailScreen() {
             {t('common.goBack', 'Go Back')}
           </Text>
         </Pressable>
-      </SafeAreaView>
+      </View>
     );
   }
 
@@ -88,33 +96,33 @@ export default function ExperienceDetailScreen() {
   const images = experience.images || [];
 
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-secondary-900" edges={['top']}>
+    <View className="flex-1 bg-white dark:bg-secondary-900">
       {/* Header */}
-      <View className="absolute top-12 left-0 right-0 z-10 flex-row items-center justify-between px-4">
+      <View className="absolute left-0 right-0 z-10 flex-row items-center justify-between px-4" style={{ top: insets.top + 8 }}>
         <Pressable
           onPress={() => router.back()}
-          className="w-10 h-10 bg-white/90 dark:bg-secondary-800/90 rounded-full items-center justify-center shadow-sm"
+          className="w-10 h-10 bg-black/40 rounded-full items-center justify-center"
         >
-          <Ionicons name="arrow-back" size={22} color={isDark ? '#FFFFFF' : '#111111'} />
+          <Ionicons name="arrow-back" size={22} color="#FFFFFF" />
         </Pressable>
         <View className="flex-row gap-2">
           {isOwner && (
             <Pressable
               onPress={handleEdit}
-              className="w-10 h-10 bg-white/90 dark:bg-secondary-800/90 rounded-full items-center justify-center shadow-sm"
+              className="w-10 h-10 bg-black/40 rounded-full items-center justify-center"
             >
-              <Ionicons name="pencil" size={20} color={isDark ? '#FFFFFF' : '#111111'} />
+              <Ionicons name="pencil" size={20} color="#FFFFFF" />
             </Pressable>
           )}
           <Pressable
             onPress={handleBookmarkToggle}
             disabled={bookmarkLoading}
-            className="w-10 h-10 bg-white/90 dark:bg-secondary-800/90 rounded-full items-center justify-center shadow-sm"
+            className="w-10 h-10 bg-black/40 rounded-full items-center justify-center"
           >
             <Ionicons
               name={experience?.isBookmarked ? 'bookmark' : 'bookmark-outline'}
               size={22}
-              color={experience?.isBookmarked ? '#FD512E' : isDark ? '#FFFFFF' : '#111111'}
+              color={experience?.isBookmarked ? '#FD512E' : '#FFFFFF'}
             />
           </Pressable>
         </View>
@@ -136,11 +144,11 @@ export default function ExperienceDetailScreen() {
                 scrollEventThrottle={16}
               >
                 {images.map((uri, index) => (
-                  <Image
+                  <CachedImage
                     key={index}
-                    source={{ uri }}
-                    className="w-screen aspect-[4/3]"
-                    resizeMode="cover"
+                    source={uri}
+                    style={{ width: SCREEN_WIDTH, aspectRatio: 4 / 3 }}
+                    contentFit="cover"
                   />
                 ))}
               </ScrollView>
@@ -206,9 +214,10 @@ export default function ExperienceDetailScreen() {
           >
             <View className="w-10 h-10 rounded-full bg-surface dark:bg-secondary-800 overflow-hidden mr-3">
               {experience.user.avatar_url ? (
-                <Image
-                  source={{ uri: experience.user.avatar_url }}
-                  className="w-full h-full"
+                <CachedImage
+                  source={experience.user.avatar_url}
+                  style={{ width: '100%', height: '100%' }}
+                  recyclingKey={experience.user.id}
                 />
               ) : (
                 <View className="w-full h-full items-center justify-center bg-primary-100 dark:bg-primary-900">
@@ -230,8 +239,8 @@ export default function ExperienceDetailScreen() {
           {/* Description */}
           {experience.brief_description && (
             <View className="mb-5">
-              <Text className="text-dark-grey dark:text-white leading-6">
-                "{experience.brief_description}"
+              <Text className="text-dark-grey dark:text-white text-base leading-6">
+                {experience.brief_description}
               </Text>
             </View>
           )}
@@ -240,7 +249,7 @@ export default function ExperienceDetailScreen() {
           {(experience.place.lat || experience.place.google_maps_url) && (
             <Pressable
               onPress={handleOpenMaps}
-              className="flex-row items-center bg-surface dark:bg-secondary-800 py-4 px-4 rounded-xl mb-5"
+              className="flex-row items-center bg-surface dark:bg-secondary-800 py-4 px-4 rounded-xl mb-5 "
             >
               <View className="w-10 h-10 bg-white dark:bg-secondary-700 rounded-full items-center justify-center mr-3">
                 <Ionicons name="map" size={20} color="#FD512E" />
@@ -259,43 +268,38 @@ export default function ExperienceDetailScreen() {
             </Pressable>
           )}
 
-          {/* Other Recommenders */}
-          {experience.other_recommenders && experience.other_recommenders.length > 0 && (
-            <View className="mt-2">
+          {/* Other recommendations for this place */}
+          {placeExperiences && placeExperiences.length > 0 && (
+            <View className="mt-2 border-t border-b border-divider pt-5">
               <Text className="text-dark-grey dark:text-white font-semibold mb-3">
                 {t('experience.alsoRecommended', 'Also recommended by')}
               </Text>
-              <View className="flex-row flex-wrap gap-2">
-                {experience.other_recommenders.map((recommender) => (
-                  <Pressable
-                    key={recommender.id}
-                    onPress={() => handleUserPress(recommender.id)}
-                    className="flex-row items-center bg-surface dark:bg-secondary-800 px-3 py-2 rounded-full"
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ paddingRight: 16 }}
+                style={{ marginHorizontal: -16 }}
+              >
+                {placeExperiences.map((item, index) => (
+                  <View
+                    key={item.id}
+                    style={{ width: SCREEN_WIDTH * 0.42, marginLeft: index === 0 ? 16 : 0, marginRight: 12 }}
                   >
-                    <View className="w-6 h-6 rounded-full bg-primary-100 dark:bg-primary-900 mr-2 overflow-hidden">
-                      {recommender.avatar_url ? (
-                        <Image
-                          source={{ uri: recommender.avatar_url }}
-                          className="w-full h-full"
-                        />
-                      ) : (
-                        <View className="w-full h-full items-center justify-center">
-                          <Text className="text-primary text-xs font-semibold">
-                            {recommender.display_name.charAt(0).toUpperCase()}
-                          </Text>
-                        </View>
-                      )}
-                    </View>
-                    <Text className="text-dark-grey dark:text-white text-sm font-medium">
-                      {recommender.display_name}
-                    </Text>
-                  </Pressable>
+                    <ExperienceCard
+                      experience={item}
+                      showUser
+                      onPress={() => router.push(`/experience/${item.id}`)}
+                      onBookmarkToggle={() =>
+                        toggleBookmark(item.id, item.isBookmarked ?? false, item.bookmarkId)
+                      }
+                    />
+                  </View>
                 ))}
-              </View>
+              </ScrollView>
             </View>
           )}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }

@@ -92,7 +92,7 @@ export default function ExploreScreen() {
                   className="bg-white dark:bg-secondary-900 border border-divider dark:border-secondary-700 px-4 py-2.5 rounded-xl active:bg-surface dark:active:bg-secondary-700"
                 >
                   <Text className="text-dark-grey dark:text-white font-medium">{tag.display_name}</Text>
-                  <Text className="text-light-grey dark:text-secondary-500 text-xs">{tag.count} {t('common.places')}</Text>
+                  <Text className="text-light-grey dark:text-secondary-500 text-xs">{tag.count} {t('common.places', 'experiences')}</Text>
                 </Pressable>
               ))}
             </ScrollView>
@@ -120,7 +120,7 @@ export default function ExploreScreen() {
                     <Ionicons name="location" size={16} color="#FD512E" />
                     <Text className="text-dark-grey dark:text-white font-medium ml-1">{city.city}</Text>
                   </View>
-                  <Text className="text-light-grey dark:text-secondary-500 text-xs">{city.count} {t('common.places')}</Text>
+                  <Text className="text-light-grey dark:text-secondary-500 text-xs">{city.count} {t('common.places', 'experiences')}</Text>
                 </Pressable>
               ))}
             </ScrollView>
@@ -158,7 +158,7 @@ export default function ExploreScreen() {
               <Text className="text-medium-grey dark:text-secondary-400 text-center">
                 {t(
                   'explore.empty.description',
-                  'Be the first to add places in your area!'
+                  'Be the first to add experiences in your area!'
                 )}
               </Text>
             </View>

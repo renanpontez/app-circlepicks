@@ -16,7 +16,7 @@ export default {
     goBack: 'Voltar',
     appName: 'Circle Picks',
     recs: 'indicacoes',
-    places: 'lugares',
+    places: 'experiências',
     by: 'por',
     or: 'ou',
     signOut: 'Sair',
@@ -35,10 +35,10 @@ export default {
     profile: 'Perfil',
   },
   welcome: {
-    tagline: 'Pare de confiar em estranhos. Descubra lugares indicados por quem você conhece.',
+    tagline: 'Pare de confiar em estranhos. Descubra experiências indicadas por quem você conhece.',
     feature1: {
       title: 'Compartilhe Favoritos',
-      description: 'Recomende restaurantes, cafés e lugares que você ama',
+      description: 'Recomende restaurantes, cafés e experiências que você ama',
     },
     feature2: {
       title: 'Confie no Seu Círculo',
@@ -46,7 +46,7 @@ export default {
     },
     feature3: {
       title: 'Salve para Depois',
-      description: 'Favorite lugares para visitar quando puder',
+      description: 'Favorite experiências para visitar quando puder',
     },
     getStarted: 'Começar',
     signIn: 'Já tenho uma conta',
@@ -76,7 +76,7 @@ export default {
   },
   signup: {
     title: 'Criar conta',
-    subtitle: 'Entre para o Circle Picks e comece a compartilhar seus lugares favoritos',
+    subtitle: 'Entre para o Circle Picks e comece a compartilhar suas experiências favoritas',
     displayName: 'Nome',
     displayNamePlaceholder: 'João Silva',
     username: 'Nome de usuário',
@@ -111,31 +111,31 @@ export default {
     },
     empty: {
       title: 'Seu feed está vazio',
-      description: 'Comece adicionando seus lugares favoritos ou siga amigos para ver suas recomendações',
-      action: 'Adicionar Primeiro Lugar',
+      description: 'Comece adicionando suas experiências favoritas ou siga amigos para ver suas recomendações',
+      action: 'Adicionar Primeira Experiência',
     },
   },
   profile: {
     title: 'Perfil',
     editProfile: 'Editar Perfil',
     stats: {
-      experiences: 'Lugares',
+      experiences: 'Experiências',
       followers: 'Seguidores',
       following: 'Seguindo',
     },
     tabs: {
-      experiences: 'Meus Lugares',
+      experiences: 'Minhas Experiências',
       bookmarks: 'Salvos',
     },
     empty: {
-      experiences: 'Você ainda não adicionou nenhum lugar',
-      bookmarks: 'Você ainda não salvou nenhum lugar',
+      experiences: 'Você ainda não adicionou nenhuma experiência',
+      bookmarks: 'Você ainda não salvou nenhuma experiência',
     },
   },
   userProfile: {
     notFound: 'Usuário não encontrado',
-    experiences: 'Lugares',
-    noExperiences: 'Este usuário ainda não adicionou nenhum lugar',
+    experiences: 'Experiências',
+    noExperiences: 'Este usuário ainda não adicionou nenhuma experiência',
     follow: 'Seguir',
     following: 'Seguindo',
   },
@@ -146,11 +146,11 @@ export default {
     recent: 'Adicionados Recentemente',
     empty: {
       title: 'Nada para explorar ainda',
-      description: 'Seja o primeiro a adicionar lugares na sua região!',
+      description: 'Seja o primeiro a adicionar experiências na sua região!',
     },
     tag: {
-      places: 'lugares',
-      empty: 'Nenhum lugar encontrado com essa categoria',
+      places: 'experiências',
+      empty: 'Nenhuma experiência encontrada com essa categoria',
     },
   },
   add: {
@@ -160,8 +160,8 @@ export default {
       unknown: 'Localização indisponível',
     },
     search: {
-      placeholder: 'Buscar um lugar...',
-      noResults: 'Nenhum lugar encontrado',
+      placeholder: 'Buscar uma experiência...',
+      noResults: 'Nenhuma experiência encontrada',
       hint: 'Digite pelo menos 2 caracteres para buscar',
     },
     priceRange: {
@@ -184,7 +184,7 @@ export default {
     },
     description: {
       title: 'Nota (opcional)',
-      placeholder: 'Compartilhe o que torna esse lugar especial...',
+      placeholder: 'Compartilhe o que torna essa experiência especial...',
     },
     visibility: {
       title: 'Quem pode ver isso?',
@@ -204,7 +204,7 @@ export default {
   experience: {
     error: 'Falha ao carregar experiência',
     openMaps: 'Abrir no Maps',
-    alsoRecommended: 'Também recomendado por',
+    alsoRecommended: 'Recomendações similares',
     edit: {
       title: 'Editar Experiencia',
       notOwner: 'Voce so pode editar suas proprias experiencias',
@@ -215,15 +215,15 @@ export default {
     },
   },
   search: {
-    placeholder: 'Buscar lugares, usuários...',
-    hint: 'Busque por lugares, restaurantes ou pessoas',
+    placeholder: 'Buscar experiências, usuários...',
+    hint: 'Busque por experiências, restaurantes ou pessoas',
     noResults: {
       title: 'Nenhum resultado encontrado',
       description: 'Tente um termo de busca diferente',
     },
     sections: {
       users: 'PESSOAS',
-      places: 'LUGARES',
+      places: 'EXPERIÊNCIAS',
       experiences: 'RECOMENDAÇÕES',
     },
   },
@@ -242,6 +242,24 @@ export default {
     success: 'Perfil atualizado',
     error: 'Não foi possível atualizar o perfil',
     usernameTaken: 'Nome de usuário já está em uso',
+  },
+  bookmark: {
+    saved: {
+      title: 'Experiencia salva',
+      message: 'Adicionada as suas experiencias salvas',
+    },
+    removed: {
+      title: 'Removida',
+      message: 'Removida das suas experiencias salvas',
+    },
+    errorSaving: {
+      title: 'Nao foi possivel salvar',
+      message: 'Algo deu errado. Tente novamente.',
+    },
+    errorRemoving: {
+      title: 'Nao foi possivel remover',
+      message: 'Algo deu errado. Tente novamente.',
+    },
   },
   settings: {
     title: 'Configurações',

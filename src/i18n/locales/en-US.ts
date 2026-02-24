@@ -16,7 +16,7 @@ export default {
     goBack: 'Go Back',
     appName: 'Circle Picks',
     recs: 'recs',
-    places: 'places',
+    places: 'experiences',
     by: 'by',
     or: 'or',
     signOut: 'Sign Out',
@@ -35,7 +35,7 @@ export default {
     profile: 'Profile',
   },
   welcome: {
-    tagline: 'Stop trusting strangers. Discover places from people you actually know.',
+    tagline: 'Stop trusting strangers. Discover experiences from people you actually know.',
     feature1: {
       title: 'Share Your Favorites',
       description: 'Recommend restaurants, cafes, and spots you love',
@@ -46,7 +46,7 @@ export default {
     },
     feature3: {
       title: 'Save for Later',
-      description: 'Bookmark places to try when you visit',
+      description: 'Bookmark experiences to try when you visit',
     },
     getStarted: 'Get Started',
     signIn: 'I already have an account',
@@ -76,7 +76,7 @@ export default {
   },
   signup: {
     title: 'Create account',
-    subtitle: 'Join Circle Picks and start sharing your favorite places',
+    subtitle: 'Join Circle Picks and start sharing your favorite experiences',
     displayName: 'Display Name',
     displayNamePlaceholder: 'John Doe',
     username: 'Username',
@@ -111,31 +111,31 @@ export default {
     },
     empty: {
       title: 'Your feed is empty',
-      description: 'Start by adding your favorite places or follow friends to see their recommendations',
-      action: 'Add Your First Place',
+      description: 'Start by adding your favorite experiences or follow friends to see their recommendations',
+      action: 'Add Your First Experience',
     },
   },
   profile: {
     title: 'Profile',
     editProfile: 'Edit Profile',
     stats: {
-      experiences: 'Places',
+      experiences: 'Experiences',
       followers: 'Followers',
       following: 'Following',
     },
     tabs: {
-      experiences: 'My Places',
+      experiences: 'My Experiences',
       bookmarks: 'Saved',
     },
     empty: {
-      experiences: "You haven't added any places yet",
-      bookmarks: "You haven't saved any places yet",
+      experiences: "You haven't added any experiences yet",
+      bookmarks: "You haven't saved any experiences yet",
     },
   },
   userProfile: {
     notFound: 'User not found',
-    experiences: 'Places',
-    noExperiences: "This user hasn't added any places yet",
+    experiences: 'Experiences',
+    noExperiences: "This user hasn't added any experiences yet",
     follow: 'Follow',
     following: 'Following',
   },
@@ -146,11 +146,11 @@ export default {
     recent: 'Recently Added',
     empty: {
       title: 'Nothing to explore yet',
-      description: 'Be the first to add places in your area!',
+      description: 'Be the first to add experiences in your area!',
     },
     tag: {
-      places: 'places',
-      empty: 'No places found with this tag',
+      places: 'experiences',
+      empty: 'No experiences found with this tag',
     },
   },
   add: {
@@ -160,8 +160,8 @@ export default {
       unknown: 'Location unavailable',
     },
     search: {
-      placeholder: 'Search for a place...',
-      noResults: 'No places found',
+      placeholder: 'Search for an experience...',
+      noResults: 'No experiences found',
       hint: 'Type at least 2 characters to search',
     },
     priceRange: {
@@ -184,7 +184,7 @@ export default {
     },
     description: {
       title: 'Note (optional)',
-      placeholder: 'Share what makes this place special...',
+      placeholder: 'Share what makes this experience special...',
     },
     visibility: {
       title: 'Who can see this?',
@@ -215,15 +215,15 @@ export default {
     },
   },
   search: {
-    placeholder: 'Search places, users...',
-    hint: 'Search for places, restaurants, or people',
+    placeholder: 'Search experiences, users...',
+    hint: 'Search for experiences, restaurants, or people',
     noResults: {
       title: 'No results found',
       description: 'Try a different search term',
     },
     sections: {
       users: 'PEOPLE',
-      places: 'PLACES',
+      places: 'EXPERIENCES',
       experiences: 'RECOMMENDATIONS',
     },
   },
@@ -242,6 +242,24 @@ export default {
     success: 'Profile updated',
     error: 'Could not update profile',
     usernameTaken: 'Username is already taken',
+  },
+  bookmark: {
+    saved: {
+      title: 'Experience saved',
+      message: 'Added to your saved experiences',
+    },
+    removed: {
+      title: 'Removed',
+      message: 'Removed from your saved experiences',
+    },
+    errorSaving: {
+      title: 'Could not save',
+      message: 'Something went wrong. Please try again.',
+    },
+    errorRemoving: {
+      title: 'Could not remove',
+      message: 'Something went wrong. Please try again.',
+    },
   },
   settings: {
     title: 'Settings',

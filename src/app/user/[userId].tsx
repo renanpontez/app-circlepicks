@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Pressable, Image, RefreshControl, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, Pressable, RefreshControl, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 
 import { ExperienceCard } from '@/components';
+import { CachedImage } from '@/components/ui/CachedImage';
 import { useUserProfile, useUserExperiences, useFollowStatus, useToggleFollow, useToggleBookmark } from '@/hooks';
 import { useAuthStore } from '@/stores';
 import { useTheme } from '@/providers/ThemeProvider';
@@ -99,7 +100,7 @@ export default function UserProfileScreen() {
             {/* Avatar */}
             <View className="w-20 h-20 rounded-full bg-surface dark:bg-secondary-800 overflow-hidden mr-4">
               {profile.avatar_url ? (
-                <Image source={{ uri: profile.avatar_url }} className="w-full h-full" />
+                <CachedImage source={profile.avatar_url} style={{ width: '100%', height: '100%' }} recyclingKey={userId} />
               ) : (
                 <View className="w-full h-full items-center justify-center bg-primary-100 dark:bg-primary-900">
                   <Text className="text-primary text-2xl font-bold">
@@ -113,7 +114,7 @@ export default function UserProfileScreen() {
             <View className="flex-1 flex-row justify-around">
               <StatItem
                 value={profile.stats.experiences_count}
-                label={t('profile.stats.experiences', 'Places')}
+                label={t('profile.stats.experiences', 'Experiences')}
               />
               <StatItem
                 value={profile.stats.followers_count}
@@ -165,7 +166,7 @@ export default function UserProfileScreen() {
         {/* Experiences */}
         <View className="p-4">
           <Text className="text-lg font-bold text-dark-grey dark:text-white mb-4">
-            {t('userProfile.experiences', 'Places')}
+            {t('userProfile.experiences', 'Experiences')}
             {experiences && (
               <Text className="text-light-grey dark:text-secondary-500 font-normal"> ({experiences.length})</Text>
             )}
@@ -189,7 +190,7 @@ export default function UserProfileScreen() {
             <View className="items-center py-12">
               <Ionicons name="map-outline" size={48} color={isDark ? colors.secondary[500] : colors['light-grey']} />
               <Text className="text-medium-grey dark:text-secondary-400 mt-4 text-center">
-                {t('userProfile.noExperiences', "This user hasn't added any places yet")}
+                {t('userProfile.noExperiences', "This user hasn't added any experiences yet")}
               </Text>
             </View>
           )}

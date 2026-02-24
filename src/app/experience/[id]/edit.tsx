@@ -260,7 +260,7 @@ export default function EditExperienceScreen() {
           </Text>
           <TextInput
             className="bg-surface dark:bg-secondary-800 border border-divider dark:border-secondary-700 rounded-xl px-4 py-3 text-dark-grey dark:text-white min-h-[80px]"
-            placeholder={t('add.description.placeholder', 'Share what makes this place special...')}
+            placeholder={t('add.description.placeholder', 'Share what makes this experience special...')}
             placeholderTextColor={isDark ? '#737373' : '#888888'}
             value={description}
             onChangeText={setDescription}

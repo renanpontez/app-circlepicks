@@ -43,8 +43,8 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
               {/* White ring */}
               <View style={[styles.addRing, { backgroundColor: bgColor, outlineColor: bgColor }]}>
                 <Pressable onPress={onPress}>
-                  <View style={isFocused ? [styles.addButtonFocused, { backgroundColor: bgColor }] : styles.addButton}>
-                    <Ionicons name="add" size={28} color={isFocused ? '#FD512E' : '#FFFFFF'} />
+                  <View style={isFocused ? [styles.addButtonFocused] : [styles.addButton, { backgroundColor: bgColor }]}>
+                    <Ionicons name="add" size={28} color={!isFocused ? '#FD512E' : '#FFF'} />
                   </View>
                 </Pressable>
               </View>
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     outlineStyle: 'solid',
     outlineWidth: 8,
   },
-  addButton: {
+  addButtonFocused: {
     width: ADD_BUTTON_SIZE,
     height: ADD_BUTTON_SIZE,
     borderRadius: ADD_BUTTON_SIZE / 2,
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 8,
   },
-  addButtonFocused: {
+  addButton: {
     width: ADD_BUTTON_SIZE,
     height: ADD_BUTTON_SIZE,
     borderRadius: ADD_BUTTON_SIZE / 2,

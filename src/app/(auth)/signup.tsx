@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Pressable, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Image } from 'react-native';
+import { View, Text, TextInput, Pressable, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks';
 import { useGoogleAuth } from '@/hooks/useGoogleAuth';
 import { Ionicons } from '@expo/vector-icons';
 import { Logo } from '@/components';
+import { CachedImage } from '@/components/ui/CachedImage';
 
 export default function SignUpScreen() {
   const router = useRouter();
@@ -82,7 +83,7 @@ export default function SignUpScreen() {
               {t('signup.title', 'Create account')}
             </Text>
             <Text className="text-medium-grey text-base mb-8">
-              {t('signup.subtitle', 'Join Circle Picks and start sharing your favorite places')}
+              {t('signup.subtitle', 'Join Circle Picks and start sharing your favorite experiences')}
             </Text>
 
             {/* Google Sign In Button */}
@@ -95,9 +96,9 @@ export default function SignUpScreen() {
                 <ActivityIndicator color="#111111" />
               ) : (
                 <>
-                  <Image
-                    source={{ uri: 'https://www.google.com/favicon.ico' }}
-                    className="w-5 h-5 mr-3"
+                  <CachedImage
+                    source="https://www.google.com/favicon.ico"
+                    style={{ width: 20, height: 20, marginRight: 12 }}
                   />
                   <Text className="text-dark-grey font-semibold text-base">
                     {t('signup.googleButton', 'Continue with Google')}

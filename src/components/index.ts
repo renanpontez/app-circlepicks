@@ -6,6 +6,6 @@ export * from './dev';
 
 // Circle Picks Components
 export { ExperienceCard } from './ExperienceCard';
-export { ExperienceCardSkeleton } from './ExperienceCardSkeleton';
+export { ExperienceCardSkeleton, ShimmerBlock } from './ExperienceCardSkeleton';
 export { TagInput } from './TagInput';
 export { Logo } from './Logo';

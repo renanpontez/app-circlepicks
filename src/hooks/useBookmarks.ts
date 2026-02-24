@@ -42,6 +42,7 @@ export function useAddBookmark() {
       await queryClient.cancelQueries({ queryKey: ['explore'] });
       await queryClient.cancelQueries({ queryKey: ['bookmarks'] });
       await queryClient.cancelQueries({ queryKey: ['experiences', 'user'] });
+      await queryClient.cancelQueries({ queryKey: ['experiences', 'place'] });
 
       const previousState = snapshotCaches(queryClient, experienceId);
 
@@ -55,8 +56,8 @@ export function useAddBookmark() {
       updateCaches(queryClient, experienceId, true, data.bookmarkId);
       queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
       toast.success(
-        t('bookmark.saved.title', 'Place saved'),
-        t('bookmark.saved.message', 'Added to your saved places'),
+        t('bookmark.saved.title', 'Experience saved'),
+        t('bookmark.saved.message', 'Added to your saved experiences'),
       );
     },
     onError: (_error, _experienceId, context) => {
@@ -84,6 +85,7 @@ export function useRemoveBookmark() {
       await queryClient.cancelQueries({ queryKey: ['explore'] });
       await queryClient.cancelQueries({ queryKey: ['bookmarks'] });
       await queryClient.cancelQueries({ queryKey: ['experiences', 'user'] });
+      await queryClient.cancelQueries({ queryKey: ['experiences', 'place'] });
 
       const previousState = snapshotCaches(queryClient, experienceId);
 
@@ -96,7 +98,7 @@ export function useRemoveBookmark() {
       queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
       toast.success(
         t('bookmark.removed.title', 'Removed'),
-        t('bookmark.removed.message', 'Removed from your saved places'),
+        t('bookmark.removed.message', 'Removed from your saved experiences'),
       );
     },
     onError: (_error, _variables, context) => {
@@ -189,6 +191,7 @@ interface CacheSnapshot {
   experience: [readonly unknown[], unknown][];
   bookmarks: [readonly unknown[], ExperienceFeedItem[] | undefined][];
   userExperiences: [readonly unknown[], ExperienceFeedItem[] | undefined][];
+  placeExperiences: [readonly unknown[], ExperienceFeedItem[] | undefined][];
 }
 
 function snapshotCaches(queryClient: QueryClient, experienceId: string): CacheSnapshot {
@@ -198,6 +201,7 @@ function snapshotCaches(queryClient: QueryClient, experienceId: string): CacheSn
     experience: queryClient.getQueriesData({ queryKey: ['experience', experienceId] }),
     bookmarks: queryClient.getQueriesData<ExperienceFeedItem[]>({ queryKey: ['bookmarks'] }),
     userExperiences: queryClient.getQueriesData<ExperienceFeedItem[]>({ queryKey: ['experiences', 'user'] }),
+    placeExperiences: queryClient.getQueriesData<ExperienceFeedItem[]>({ queryKey: ['experiences', 'place'] }),
   };
 }
 
@@ -215,6 +219,9 @@ function restoreCaches(queryClient: QueryClient, snapshot: CacheSnapshot) {
     queryClient.setQueryData(key, data);
   }
   for (const [key, data] of snapshot.userExperiences) {
+    queryClient.setQueryData(key, data);
+  }
+  for (const [key, data] of snapshot.placeExperiences) {
     queryClient.setQueryData(key, data);
   }
 }
@@ -273,6 +280,12 @@ function updateCaches(
 
   // Update user experiences cache (profile "My Places" tab)
   queryClient.setQueriesData<ExperienceFeedItem[]>({ queryKey: ['experiences', 'user'] }, (old) => {
+    if (!old) return old;
+    return old.map(updateExp);
+  });
+
+  // Update place experiences cache (experience detail "Also recommended" section)
+  queryClient.setQueriesData<ExperienceFeedItem[]>({ queryKey: ['experiences', 'place'] }, (old) => {
     if (!old) return old;
     return old.map(updateExp);
   });

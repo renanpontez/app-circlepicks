@@ -193,7 +193,7 @@ export default function AddExperienceScreen() {
           <Ionicons name="search" size={20} color={isDark ? '#a3a3a3' : '#888888'} />
           <TextInput
             className="flex-1 py-3 px-2 text-dark-grey dark:text-white"
-            placeholder={t('add.search.placeholder', 'Search for a place...')}
+            placeholder={t('add.search.placeholder', 'Search for an experience...')}
             placeholderTextColor={isDark ? '#737373' : '#888888'}
             value={searchQuery}
             onChangeText={handleSearchChange}
@@ -243,7 +243,7 @@ export default function AddExperienceScreen() {
           ))
         ) : searchQuery.length >= 2 ? (
           <Text className="text-medium-grey dark:text-secondary-400 text-center py-8">
-            {t('add.search.noResults', 'No places found')}
+            {t('add.search.noResults', 'No experiences found')}
           </Text>
         ) : (
           <Text className="text-medium-grey dark:text-secondary-400 text-center py-8">
@@ -353,7 +353,7 @@ export default function AddExperienceScreen() {
         </Text>
         <TextInput
           className="bg-surface dark:bg-secondary-800 border border-divider dark:border-secondary-700 rounded-xl px-4 py-3 text-dark-grey dark:text-white min-h-[80px]"
-          placeholder={t('add.description.placeholder', 'Share what makes this place special...')}
+          placeholder={t('add.description.placeholder', 'Share what makes this experience special...')}
           placeholderTextColor={isDark ? '#737373' : '#888888'}
           value={description}
           onChangeText={setDescription}

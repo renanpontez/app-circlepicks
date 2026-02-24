@@ -3,7 +3,6 @@ import {
   View,
   Text,
   Pressable,
-  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -15,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
 import { Input } from '@/components/ui/Input';
+import { CachedImage } from '@/components/ui/CachedImage';
 import { Button } from '@/components/ui/Button';
 import { useMyProfile, useUpdateProfile } from '@/hooks';
 import { useAuthStore, toast } from '@/stores';
@@ -114,10 +114,10 @@ export default function EditProfileScreen() {
             <Pressable onPress={handlePickImage} className="items-center">
               <View className="w-24 h-24 rounded-full bg-surface dark:bg-secondary-800" style={{ overflow: 'hidden' }}>
                 {currentAvatarUrl ? (
-                  <Image
-                    source={{ uri: currentAvatarUrl }}
+                  <CachedImage
+                    source={currentAvatarUrl}
                     style={{ width: 96, height: 96, borderRadius: 48 }}
-                    resizeMode="cover"
+                    contentFit="cover"
                   />
                 ) : (
                   <View className="w-full h-full items-center justify-center bg-primary-100 dark:bg-primary-900">

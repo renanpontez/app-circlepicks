@@ -8,7 +8,7 @@ import Animated, {
   interpolate,
 } from 'react-native-reanimated';
 
-function ShimmerBlock({ className }: { className?: string }) {
+export function ShimmerBlock({ className }: { className?: string }) {
   const shimmer = useSharedValue(0);
 
   useEffect(() => {

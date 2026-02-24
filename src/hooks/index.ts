@@ -7,6 +7,7 @@ export { useAllFeedSections } from './useFeed';
 export {
   useExperience,
   useUserExperiences,
+  usePlaceExperiences,
   useCreateExperience,
   useUpdateExperience,
   useDeleteExperience,

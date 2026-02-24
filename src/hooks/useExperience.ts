@@ -145,6 +145,101 @@ export function useUserExperiences(userId: string, options?: { enabled?: boolean
   });
 }
 
+// Hook for fetching experiences for a place (directly from Supabase)
+export function usePlaceExperiences(placeId: string, excludeExperienceId?: string, options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: ['experiences', 'place', placeId, excludeExperienceId],
+    queryFn: async () => {
+      let query = supabase
+        .from('experiences')
+        .select(`
+          id,
+          price_range,
+          tags,
+          brief_description,
+          images,
+          created_at,
+          user_id,
+          place_id,
+          visibility,
+          users:user_id (
+            id,
+            display_name,
+            avatar_url
+          ),
+          places:place_id (
+            id,
+            name,
+            city,
+            country,
+            instagram_handle
+          ),
+          bookmarks!bookmarks_experience_id_fkey (
+            id
+          )
+        `)
+        .eq('place_id', placeId)
+        .eq('status', 'active')
+        .eq('visibility', 'public')
+        .order('created_at', { ascending: false });
+
+      if (excludeExperienceId) {
+        query = query.neq('id', excludeExperienceId);
+      }
+
+      const { data, error } = await query;
+
+      if (error) throw error;
+
+      // Get tag display names
+      const allSlugs = [...new Set((data || []).flatMap((e: any) => e.tags || []))];
+      const tagNames = new Map<string, string>();
+      if (allSlugs.length > 0) {
+        const { data: tags } = await supabase.from('tags').select('slug, display_name').in('slug', allSlugs);
+        for (const t of tags || []) {
+          if (t.display_name) tagNames.set(t.slug, t.display_name);
+        }
+      }
+
+      return (data || []).map((exp: any): ExperienceFeedItem => {
+        const placeName = exp.places?.name || 'Unknown Place';
+        const placeCity = exp.places?.city || '';
+        const images = exp.images || [];
+        const bookmark = Array.isArray(exp.bookmarks) ? exp.bookmarks[0] : null;
+
+        return {
+          id: exp.id,
+          experience_id: exp.id,
+          user: {
+            id: exp.users?.id || exp.user_id,
+            display_name: exp.users?.display_name || 'Unknown User',
+            avatar_url: exp.users?.avatar_url || null,
+          },
+          place: {
+            id: exp.places?.id || exp.place_id,
+            name: placeName,
+            city_short: placeCity,
+            country: exp.places?.country || '',
+            thumbnail_image_url: images.length > 0 ? images[0] : null,
+            instagram: exp.places?.instagram_handle || null,
+          },
+          price_range: exp.price_range || '$$',
+          tags: (exp.tags || []).map((slug: string) => ({
+            slug,
+            display_name: tagNames.get(slug) || slug.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+          })),
+          time_ago: formatTimeAgo(exp.created_at),
+          description: exp.brief_description,
+          visibility: exp.visibility,
+          isBookmarked: !!bookmark,
+          bookmarkId: bookmark?.id,
+        };
+      });
+    },
+    enabled: !!placeId && (options?.enabled ?? true),
+  });
+}
+
 function formatTimeAgo(dateStr: string): string {
   const now = new Date();
   const date = new Date(dateStr);

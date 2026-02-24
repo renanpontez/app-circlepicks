@@ -2,7 +2,9 @@ import React from 'react';
 import { View, Text, Pressable, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { useTheme } from '@/providers/ThemeProvider';
+import { CachedImage } from '@/components/ui/CachedImage';
 import type { ExperienceFeedItem } from '@/domain/models';
 
 interface ExperienceCardProps {
@@ -18,6 +20,7 @@ export function ExperienceCard({
   onBookmarkToggle,
   showUser = true,
 }: ExperienceCardProps) {
+  const router = useRouter();
   const { t } = useTranslation();
   const { isDark } = useTheme();
   const { user, place, price_range, tags, time_ago, isBookmarked, description } = experience;
@@ -29,12 +32,19 @@ export function ExperienceCard({
     >
       {/* User Header */}
       {showUser && (
-        <View className="flex-row items-center px-1 py-2.5">
+        <Pressable
+          onPress={(e) => {
+            e.stopPropagation();
+            router.push(`/user/${user.id}`);
+          }}
+          className="flex-row items-center px-1 py-2.5 active:opacity-70"
+        >
           <View className="w-8 h-8 rounded-full bg-surface dark:bg-secondary-800 mr-3 overflow-hidden">
             {user.avatar_url ? (
-              <Image
-                source={{ uri: user.avatar_url }}
-                className="w-full h-full"
+              <CachedImage
+                source={user.avatar_url}
+                style={{ width: '100%', height: '100%' }}
+                recyclingKey={user.id}
               />
             ) : (
               <View className="w-full h-full items-center justify-center bg-primary-100 dark:bg-primary-900">
@@ -52,16 +62,17 @@ export function ExperienceCard({
               {place.city_short}, {place.country}
             </Text>
           </View>
-        </View>
+        </Pressable>
       )}
 
       {/* Image */}
       <View className="relative aspect-[4/3]">
         {place.thumbnail_image_url ? (
-          <Image
-            source={{ uri: place.thumbnail_image_url }}
-            className="w-full h-full rounded-lg"
-            resizeMode="cover"
+          <CachedImage
+            source={place.thumbnail_image_url}
+            style={{ width: '100%', height: '100%', borderRadius: 8 }}
+            contentFit="cover"
+            recyclingKey={experience.experience_id}
           />
         ) : (
           <View className="w-full h-full bg-surface dark:bg-secondary-800 items-center justify-center">

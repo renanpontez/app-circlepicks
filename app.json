@@ -21,7 +21,8 @@
         "NSPhotoLibraryUsageDescription": "Circle Picks needs photo library access to add photos to your recommendations.",
         "NSLocationWhenInUseUsageDescription": "Circle Picks uses your location to find nearby places and show location-based recommendations.",
         "ITSAppUsesNonExemptEncryption": false
-      }
+      },
+      "appleTeamId": "PPWHQ52VLV"
     },
     "android": {
       "adaptiveIcon": {

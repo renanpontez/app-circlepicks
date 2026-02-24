@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, Image, Pressable, ActivityIndicator } from 'react-native';
+import { View, Text, Pressable, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { useGoogleAuth } from '@/hooks/useGoogleAuth';
 import { Logo } from '@/components';
+import { CachedImage } from '@/components/ui/CachedImage';
 
 export default function WelcomeScreen() {
   const router = useRouter();
@@ -35,7 +36,7 @@ export default function WelcomeScreen() {
             Circle Picks
           </Text>
           <Text className="text-lg text-medium-grey text-center px-4">
-            {t('welcome.tagline', 'Stop trusting strangers. Discover places from people you actually know.')}
+            {t('welcome.tagline', 'Stop trusting strangers. Discover experiences from people you actually know.')}
           </Text>
         </View>
 
@@ -54,7 +55,7 @@ export default function WelcomeScreen() {
           <FeatureItem
             emoji="🔖"
             title={t('welcome.feature3.title', 'Save for Later')}
-            description={t('welcome.feature3.description', 'Bookmark places to try when you visit')}
+            description={t('welcome.feature3.description', 'Bookmark experiences to try when you visit')}
           />
         </View>
 
@@ -77,10 +78,9 @@ export default function WelcomeScreen() {
               <ActivityIndicator color="#fff" />
             ) : (
               <>
-                <Image
-                  source={{ uri: 'https://www.google.com/favicon.ico' }}
-                  className="w-5 h-5 mr-3"
-                  style={{ tintColor: '#fff' }}
+                <CachedImage
+                  source="https://www.google.com/favicon.ico"
+                  style={{ width: 20, height: 20, marginRight: 12, tintColor: '#fff' }}
                 />
                 <Text className="text-white font-semibold text-lg">
                   {t('welcome.continueWithGoogle', 'Continue with Google')}

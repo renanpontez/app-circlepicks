@@ -119,7 +119,7 @@ export default function FeedScreen() {
             <Text className="text-medium-grey dark:text-secondary-400 text-center mb-6">
               {t(
                 'feed.empty.description',
-                'Start by adding your favorite places or follow friends to see their recommendations'
+                'Start by adding your favorite experiences or follow friends to see their recommendations'
               )}
             </Text>
             <Pressable
@@ -127,7 +127,7 @@ export default function FeedScreen() {
               className="bg-primary px-6 py-3 rounded-xl active:bg-primary-600"
             >
               <Text className="text-white font-semibold">
-                {t('feed.empty.action', 'Add Your First Place')}
+                {t('feed.empty.action', 'Add Your First Experience')}
               </Text>
             </Pressable>
           </View>
