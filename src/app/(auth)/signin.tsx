@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Pressable, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, Pressable, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -7,7 +7,6 @@ import { useAuth } from '@/hooks';
 import { useGoogleAuth } from '@/hooks/useGoogleAuth';
 import { Ionicons } from '@expo/vector-icons';
 import { Logo } from '@/components';
-import { CachedImage } from '@/components/ui/CachedImage';
 
 export default function SignInScreen() {
   const router = useRouter();
@@ -86,8 +85,8 @@ export default function SignInScreen() {
               <ActivityIndicator color="#111111" />
             ) : (
               <>
-                <CachedImage
-                  source="https://www.google.com/favicon.ico"
+                <Image
+                  source={require('@/../assets/google.png')}
                   style={{ width: 20, height: 20, marginRight: 12 }}
                 />
                 <Text className="text-dark-grey font-semibold text-base">

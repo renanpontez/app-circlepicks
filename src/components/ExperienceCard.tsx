@@ -3,7 +3,6 @@ import { View, Text, Pressable, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useTheme } from '@/providers/ThemeProvider';
 import { CachedImage } from '@/components/ui/CachedImage';
 import type { ExperienceFeedItem } from '@/domain/models';
 
@@ -22,8 +21,7 @@ export function ExperienceCard({
 }: ExperienceCardProps) {
   const router = useRouter();
   const { t } = useTranslation();
-  const { isDark } = useTheme();
-  const { user, place, price_range, tags, time_ago, isBookmarked, description } = experience;
+  const { user, place, price_range, tags, isBookmarked, description } = experience;
 
   return (
     <Pressable
@@ -75,7 +73,7 @@ export function ExperienceCard({
             recyclingKey={experience.experience_id}
           />
         ) : (
-          <View className="w-full h-full bg-surface dark:bg-secondary-800 items-center justify-center">
+          <View className="w-full h-full bg-surface dark:bg-secondary-800 items-center justify-center rounded-lg">
             <Image
               source={require('@/../assets/icon.png')}
               className="w-16 h-16 opacity-20 rounded-lg"
@@ -84,74 +82,70 @@ export function ExperienceCard({
             <Text className="text-light-grey dark:text-secondary-500 text-xs mt-2">{t('common.noImage', 'No image')}</Text>
           </View>
         )}
-      </View>
 
-      {/* Action Row */}
-      <View className="flex-row items-center px-1 pt-2.5 pb-1">
-        <View className="flex-col gap-2">
-
-          <Text className="text-base font-bold text-dark-grey dark:text-white" numberOfLines={1}>
-            {place.name}
-          </Text>
-
-          {/* Tags */}
-          {tags.length > 0 && (
-            <View className="flex-row flex-wrap gap-1.5 mb-2">
-              {tags.slice(0, 3).map((tag) => (
-                <View key={tag.slug} className="bg-chip dark:bg-secondary-700 px-2 py-0.5 rounded-full">
-                  <Text className="text-medium-grey dark:text-secondary-400 text-xs font-medium">
-                    {tag.display_name}
-                  </Text>
-                </View>
-              ))}
-              {tags.length > 3 && (
-                <View className="bg-chip dark:bg-secondary-700 px-2 py-0.5 rounded-full">
-                  <Text className="text-medium-grey dark:text-secondary-400 text-xs font-medium">
-                    +{tags.length - 3}
-                  </Text>
-                </View>
-              )}
-
-              <Text className="bg-chip dark:bg-secondary-700 px-2 py-0.5 rounded-full text-medium-grey dark:text-secondary-400 text-xs font-medium">{price_range}</Text>
-            </View>
-          )}
-
-        </View>
-        <View className="flex-1" />
+        {/* Bookmark overlay */}
         {onBookmarkToggle && (
           <Pressable
             onPress={(e) => {
               e.stopPropagation();
               onBookmarkToggle();
             }}
-            className="p-1 active:opacity-60"
+            className="absolute top-2 right-2 w-9 h-9 bg-black/40 rounded-full items-center justify-center active:opacity-70"
           >
             <Ionicons
               name={isBookmarked ? 'bookmark' : 'bookmark-outline'}
-              size={22}
-              color={isBookmarked ? '#FD512E' : isDark ? '#FFFFFF' : '#111111'}
+              size={18}
+              color={isBookmarked ? '#FD512E' : '#FFFFFF'}
             />
           </Pressable>
         )}
+
+        {/* Recommendation count overlay */}
+        {place.recommendation_count != null && place.recommendation_count > 1 && (
+          <View className="absolute bottom-2 right-2 flex-row items-center bg-black/40 rounded-full px-2.5 py-1 gap-1">
+            <Ionicons name="repeat" size={14} color="#FFFFFF" />
+            <Text className="text-white text-xs font-semibold">{place.recommendation_count}</Text>
+          </View>
+        )}
       </View>
 
-      {/* Content */}
-      <View className="px-1 pb-3">
-        {place.recommendation_count && place.recommendation_count > 1 && (
-          <Text className="text-light-grey dark:text-secondary-500">
-            {' '}· {place.recommendation_count} {t('common.recs')}
-          </Text>
-        )}
+      {/* Info */}
+      <View className="px-1 pt-2.5 pb-1">
+        <Text className="text-base font-bold text-dark-grey dark:text-white" numberOfLines={1}>
+          {place.name}
+        </Text>
 
-        {description && (
-          <Text className="text-dark-grey dark:text-secondary-200 my-3">
+        {/* Tags */}
+        {tags.length > 0 && (
+          <View className="flex-row flex-wrap gap-1.5 mt-2 mb-2">
+            {tags.slice(0, 3).map((tag) => (
+              <View key={tag.slug} className="bg-chip dark:bg-secondary-700 px-2 py-0.5 rounded-full">
+                <Text className="text-medium-grey dark:text-secondary-400 text-xs font-medium">
+                  {tag.display_name}
+                </Text>
+              </View>
+            ))}
+            {tags.length > 3 && (
+              <View className="bg-chip dark:bg-secondary-700 px-2 py-0.5 rounded-full">
+                <Text className="text-medium-grey dark:text-secondary-400 text-xs font-medium">
+                  +{tags.length - 3}
+                </Text>
+              </View>
+            )}
+
+            <Text className="bg-chip dark:bg-secondary-700 px-2 py-0.5 rounded-full text-medium-grey dark:text-secondary-400 text-xs font-medium">{price_range}</Text>
+          </View>
+        )}
+      </View>
+
+      {/* Description */}
+      {description && (
+        <View className="px-1 pb-3">
+          <Text className="text-dark-grey dark:text-secondary-200 mt-1">
             {description}
           </Text>
-        )}
-
-
-
-      </View>
+        </View>
+      )}
     </Pressable>
   );
 }

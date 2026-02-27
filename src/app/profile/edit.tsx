@@ -6,6 +6,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -16,7 +18,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { Input } from '@/components/ui/Input';
 import { CachedImage } from '@/components/ui/CachedImage';
 import { Button } from '@/components/ui/Button';
-import { useMyProfile, useUpdateProfile } from '@/hooks';
+import { useMyProfile, useUpdateProfile, useAuth } from '@/hooks';
 import { useAuthStore, toast } from '@/stores';
 import { useTheme } from '@/providers/ThemeProvider';
 import { colors } from '@/styles/colors';
@@ -28,12 +30,14 @@ export default function EditProfileScreen() {
   const { user } = useAuthStore();
   const { data: profile } = useMyProfile();
   const updateProfile = useUpdateProfile();
+  const { deleteAccount } = useAuth();
   const { isDark } = useTheme();
 
   const [displayName, setDisplayName] = useState(user?.display_name || '');
   const [username, setUsername] = useState(user?.username || '');
   const [avatarUri, setAvatarUri] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const currentAvatarUrl = avatarUri || user?.avatar_url;
 
@@ -83,6 +87,33 @@ export default function EditProfileScreen() {
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      t('deleteAccount.confirmTitle', 'Delete your account?'),
+      t('deleteAccount.confirmMessage', 'This will permanently delete your account and all your data, including your experiences, bookmarks, and followers. This action cannot be undone.'),
+      [
+        {
+          text: t('deleteAccount.cancel', 'Cancel'),
+          style: 'cancel',
+        },
+        {
+          text: t('deleteAccount.confirm', 'Delete my account'),
+          style: 'destructive',
+          onPress: async () => {
+            setIsDeleting(true);
+            try {
+              await deleteAccount();
+            } catch {
+              toast.error(t('deleteAccount.error', 'Failed to delete account. Please try again.'));
+            } finally {
+              setIsDeleting(false);
+            }
+          },
+        },
+      ],
+    );
   };
 
   const canSave = displayName.trim().length > 0 && username.trim().length > 0;
@@ -150,6 +181,23 @@ export default function EditProfileScreen() {
               autoCorrect={false}
               leftIcon="at"
             />
+          </View>
+
+          {/* Delete Account */}
+          <View className="mt-8 pt-6 mx-4 border-t border-divider dark:border-secondary-700">
+            <Pressable
+              onPress={handleDeleteAccount}
+              disabled={isDeleting}
+              className="flex-row items-center justify-center py-3"
+            >
+              {isDeleting ? (
+                <ActivityIndicator size="small" color="#EF4444" />
+              ) : (
+                <Text className="text-red-500 text-sm">
+                  {t('deleteAccount.title', 'Delete account')}
+                </Text>
+              )}
+            </Pressable>
           </View>
         </ScrollView>
 

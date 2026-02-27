@@ -166,6 +166,23 @@ export function useAuth() {
     }
   }, [router, setLoading, storeSignOut]);
 
+  // Delete account
+  const deleteAccount = useCallback(async () => {
+    try {
+      setLoading(true);
+      await httpClient.delete(API_ENDPOINTS.auth.delete);
+      await supabase.auth.signOut();
+      httpClient.setAuthToken(null);
+      storeSignOut();
+      router.replace('/(auth)/welcome');
+    } catch (error) {
+      console.error('Delete account failed:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }, [httpClient, router, setLoading, storeSignOut]);
+
   return {
     user,
     accessToken,
@@ -176,6 +193,7 @@ export function useAuth() {
     signInWithEmail,
     signUpWithEmail,
     signOut,
+    deleteAccount,
     updateUser,
   };
 }

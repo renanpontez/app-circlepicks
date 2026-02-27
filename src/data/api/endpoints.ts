@@ -9,6 +9,7 @@ export const API_ENDPOINTS = {
     signOut: '/api/auth/signout',
     session: '/api/auth/session',
     refresh: '/api/auth/refresh',
+    delete: '/api/auth/delete',
   },
 
   // Feed
@@ -77,6 +78,17 @@ export const API_ENDPOINTS = {
   // Upload
   upload: {
     image: '/api/upload',
+  },
+
+  // Reports
+  reports: {
+    create: '/api/reports',
+  },
+
+  // Blocks
+  blocks: {
+    create: '/api/blocks',
+    remove: (userId: string) => `/api/blocks/${userId}`,
   },
 
   // Search

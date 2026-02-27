@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, Pressable, ActivityIndicator } from 'react-native';
+import { View, Text, Pressable, ActivityIndicator, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { useGoogleAuth } from '@/hooks/useGoogleAuth';
 import { Logo } from '@/components';
-import { CachedImage } from '@/components/ui/CachedImage';
 
 export default function WelcomeScreen() {
   const router = useRouter();
@@ -78,10 +77,7 @@ export default function WelcomeScreen() {
               <ActivityIndicator color="#fff" />
             ) : (
               <>
-                <CachedImage
-                  source="https://www.google.com/favicon.ico"
-                  style={{ width: 20, height: 20, marginRight: 12, tintColor: '#fff' }}
-                />
+                <Image source={require('@/../assets/google.png')} style={{ width: 20, height: 20, marginRight: 12 }} />
                 <Text className="text-white font-semibold text-lg">
                   {t('welcome.continueWithGoogle', 'Continue with Google')}
                 </Text>
