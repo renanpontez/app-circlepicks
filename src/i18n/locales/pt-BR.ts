@@ -265,6 +265,11 @@ export default {
     error: 'Falha ao bloquear usuário',
     errorMessage: 'Tente novamente mais tarde.',
   },
+  unfollow: {
+    confirmTitle: 'Deixar de seguir?',
+    confirmMessage: 'Você não verá mais as experiências dessa pessoa no seu feed.',
+    confirm: 'Deixar de seguir',
+  },
   editProfile: {
     title: 'Editar Perfil',
     changePhoto: 'Alterar Foto',

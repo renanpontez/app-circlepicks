@@ -265,6 +265,11 @@ export default {
     error: 'Failed to block user',
     errorMessage: 'Please try again later.',
   },
+  unfollow: {
+    confirmTitle: 'Unfollow user?',
+    confirmMessage: 'You will no longer see their experiences in your feed.',
+    confirm: 'Unfollow',
+  },
   editProfile: {
     title: 'Edit Profile',
     changePhoto: 'Change Photo',
