@@ -87,7 +87,8 @@
           "project": "react-native",
           "organization": "agility-4k"
         }
-      ]
+      ],
+      "expo-apple-authentication"
     ],
     "experiments": {
       "typedRoutes": true

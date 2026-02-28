@@ -1,17 +1,31 @@
-import React, { useState } from 'react';
-import { View, Text, Pressable, ActivityIndicator, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Pressable, ActivityIndicator, Image, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import { useGoogleAuth } from '@/hooks/useGoogleAuth';
+import { useAppleAuth } from '@/hooks/useAppleAuth';
 import { Logo } from '@/components';
 
 export default function WelcomeScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const { signInWithGoogle } = useGoogleAuth();
+  const { signInWithApple } = useAppleAuth();
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isAppleLoading, setIsAppleLoading] = useState(false);
+  const [isAppleAvailable, setIsAppleAvailable] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      AppleAuthentication.isAvailableAsync().then(setIsAppleAvailable);
+    }
+  }, []);
+
+  const isAnyLoading = isGoogleLoading || isAppleLoading;
 
   const handleGoogleSignIn = async () => {
     try {
@@ -22,6 +36,18 @@ export default function WelcomeScreen() {
       setError(err.message || 'Google sign in failed');
     } finally {
       setIsGoogleLoading(false);
+    }
+  };
+
+  const handleAppleSignIn = async () => {
+    try {
+      setError(null);
+      setIsAppleLoading(true);
+      await signInWithApple();
+    } catch (err: any) {
+      setError(err.message || 'Apple sign in failed');
+    } finally {
+      setIsAppleLoading(false);
     }
   };
 
@@ -69,9 +95,9 @@ export default function WelcomeScreen() {
         <View className="gap-3">
           {/* Google Sign In - Primary */}
           <Pressable
-            className={`flex-row items-center justify-center bg-primary py-4 rounded-xl ${isGoogleLoading ? 'opacity-70' : 'active:bg-primary-600'}`}
+            className={`flex-row items-center justify-center bg-primary py-4 rounded-xl ${isAnyLoading ? 'opacity-70' : 'active:bg-primary-600'}`}
             onPress={handleGoogleSignIn}
-            disabled={isGoogleLoading}
+            disabled={isAnyLoading}
           >
             {isGoogleLoading ? (
               <ActivityIndicator color="#fff" />
@@ -85,11 +111,31 @@ export default function WelcomeScreen() {
             )}
           </Pressable>
 
+          {/* Apple Sign In - iOS only */}
+          {isAppleAvailable && (
+            <Pressable
+              className={`flex-row items-center justify-center bg-black py-4 rounded-xl ${isAnyLoading ? 'opacity-70' : 'active:opacity-80'}`}
+              onPress={handleAppleSignIn}
+              disabled={isAnyLoading}
+            >
+              {isAppleLoading ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <>
+                  <Ionicons name="logo-apple" size={20} color="#FFFFFF" style={{ marginRight: 12 }} />
+                  <Text className="text-white font-semibold text-lg">
+                    {t('welcome.continueWithApple', 'Continue with Apple')}
+                  </Text>
+                </>
+              )}
+            </Pressable>
+          )}
+
           {/* Email Sign Up */}
           <Pressable
             className="py-4 rounded-xl items-center border border-divider active:bg-surface"
             onPress={() => router.push('/(auth)/signup')}
-            disabled={isGoogleLoading}
+            disabled={isAnyLoading}
           >
             <Text className="text-dark-grey font-semibold text-lg">
               {t('welcome.signUpWithEmail', 'Sign up with email')}
@@ -100,7 +146,7 @@ export default function WelcomeScreen() {
           <Pressable
             className="py-2 items-center"
             onPress={() => router.push('/(auth)/signin')}
-            disabled={isGoogleLoading}
+            disabled={isAnyLoading}
           >
             <Text className="text-medium-grey">
               {t('welcome.hasAccount', 'Already have an account? ')}

@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Pressable, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import { useAuth } from '@/hooks';
 import { useGoogleAuth } from '@/hooks/useGoogleAuth';
-import { Ionicons } from '@expo/vector-icons';
+import { useAppleAuth } from '@/hooks/useAppleAuth';
 import { Logo } from '@/components';
 
 export default function SignInScreen() {
@@ -13,12 +15,21 @@ export default function SignInScreen() {
   const { t } = useTranslation();
   const { signInWithEmail, isLoading } = useAuth();
   const { signInWithGoogle } = useGoogleAuth();
+  const { signInWithApple } = useAppleAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isAppleLoading, setIsAppleLoading] = useState(false);
+  const [isAppleAvailable, setIsAppleAvailable] = useState(false);
+
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      AppleAuthentication.isAvailableAsync().then(setIsAppleAvailable);
+    }
+  }, []);
 
   const handleSignIn = async () => {
     if (!email || !password) {
@@ -46,7 +57,19 @@ export default function SignInScreen() {
     }
   };
 
-  const isAnyLoading = isLoading || isGoogleLoading;
+  const handleAppleSignIn = async () => {
+    try {
+      setError(null);
+      setIsAppleLoading(true);
+      await signInWithApple();
+    } catch (err: any) {
+      setError(err.message || t('signin.error.appleFailed', 'Apple sign in failed. Please try again.'));
+    } finally {
+      setIsAppleLoading(false);
+    }
+  };
+
+  const isAnyLoading = isLoading || isGoogleLoading || isAppleLoading;
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -79,7 +102,7 @@ export default function SignInScreen() {
           <Pressable
             onPress={handleGoogleSignIn}
             disabled={isAnyLoading}
-            className={`flex-row items-center justify-center py-4 rounded-xl border border-divider mb-6 ${isAnyLoading ? 'opacity-50' : 'active:bg-surface'}`}
+            className={`flex-row items-center justify-center py-4 rounded-xl border border-divider ${isAnyLoading ? 'opacity-50' : 'active:bg-surface'}`}
           >
             {isGoogleLoading ? (
               <ActivityIndicator color="#111111" />
@@ -95,6 +118,28 @@ export default function SignInScreen() {
               </>
             )}
           </Pressable>
+
+          {/* Apple Sign In Button - iOS only */}
+          {isAppleAvailable && (
+            <Pressable
+              onPress={handleAppleSignIn}
+              disabled={isAnyLoading}
+              className={`flex-row items-center justify-center py-4 rounded-xl bg-black ${isAnyLoading ? 'opacity-50' : 'active:opacity-80'}`}
+            >
+              {isAppleLoading ? (
+                <ActivityIndicator color="#FFFFFF" />
+              ) : (
+                <>
+                  <Ionicons name="logo-apple" size={20} color="#FFFFFF" style={{ marginRight: 12 }} />
+                  <Text className="text-white font-semibold text-base">
+                    {t('signin.appleButton', 'Continue with Apple')}
+                  </Text>
+                </>
+              )}
+            </Pressable>
+          )}
+
+          <View className="mb-6" />
 
           {/* Divider */}
           <View className="flex-row items-center mb-6">

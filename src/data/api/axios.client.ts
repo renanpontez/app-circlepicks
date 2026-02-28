@@ -10,6 +10,7 @@ import {
   HttpResponse,
 } from './http-client.interface';
 import { IStorage, STORAGE_KEYS } from '../storage';
+import { supabase } from '../supabase/client';
 
 /**
  * Factory para criar instância do HttpClient usando Axios
@@ -83,22 +84,21 @@ export const createHttpClient = (storage: IStorage, baseURL: string = ''): IHttp
       async (error) => {
         const originalRequest = error.config;
 
-        // If receives 401 and is not a retry, try refresh token
+        // If receives 401 and is not a retry, refresh via Supabase
         if (error.response?.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
 
-          const refreshToken = storage.getString(STORAGE_KEYS.REFRESH_TOKEN);
-          if (refreshToken) {
-            try {
-              // TODO: Implement refresh token logic
-              // const response = await post('/auth/refresh', { refreshToken });
-              // storage.setString(STORAGE_KEYS.AUTH_TOKEN, response.data.token);
-              // return client(originalRequest);
-            } catch {
-              // Refresh falhou, limpa tokens
-              storage.delete(STORAGE_KEYS.AUTH_TOKEN);
-              storage.delete(STORAGE_KEYS.REFRESH_TOKEN);
+          try {
+            const { data: { session } } = await supabase.auth.refreshSession();
+            if (session) {
+              storage.setString(STORAGE_KEYS.AUTH_TOKEN, session.access_token);
+              originalRequest.headers.Authorization = `Bearer ${session.access_token}`;
+              return client(originalRequest);
             }
+          } catch {
+            // Refresh failed, clear tokens
+            storage.delete(STORAGE_KEYS.AUTH_TOKEN);
+            storage.delete(STORAGE_KEYS.REFRESH_TOKEN);
           }
         }
 

@@ -211,7 +211,7 @@ export interface AuthUser {
   display_name: string;
   username: string;
   avatar_url: string | null;
-  provider: 'google' | 'email';
+  provider: 'google' | 'email' | 'apple';
   created_at: string;
 }
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Pressable, RefreshControl, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, Pressable, RefreshControl, ActivityIndicator, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { ExperienceCard } from '@/components';
 import { CachedImage } from '@/components/ui/CachedImage';
 import { useUserProfile, useUserExperiences, useFollowStatus, useToggleFollow, useToggleBookmark } from '@/hooks';
+import { useBlockUser } from '@/hooks/useBlock';
 import { useAuthStore } from '@/stores';
 import { useTheme } from '@/providers/ThemeProvider';
 import { colors } from '@/styles/colors';
@@ -27,6 +28,7 @@ export default function UserProfileScreen() {
   const { data: experiences, isLoading: experiencesLoading, refetch: refetchExperiences } = useUserExperiences(userId);
   const { data: followStatus } = useFollowStatus(userId);
   const { toggle: toggleFollow, isLoading: followLoading } = useToggleFollow();
+  const { mutate: blockUser } = useBlockUser();
 
   const isOwnProfile = currentUser?.id === userId;
 
@@ -47,6 +49,24 @@ export default function UserProfileScreen() {
   const handleFollowToggle = async () => {
     if (followLoading || !userId) return;
     await toggleFollow(userId, followStatus?.isFollowing ?? false);
+  };
+
+  const handleBlock = () => {
+    Alert.alert(
+      t('block.title', 'Block user'),
+      t('block.confirmMessage', 'You will no longer see content from this user. Are you sure?'),
+      [
+        { text: t('common.cancel', 'Cancel'), style: 'cancel' },
+        {
+          text: t('block.confirm', 'Block'),
+          style: 'destructive',
+          onPress: () => {
+            blockUser(userId);
+            router.back();
+          },
+        },
+      ]
+    );
   };
 
   if (profileLoading && !profile) {
@@ -86,6 +106,11 @@ export default function UserProfileScreen() {
         <Text className="flex-1 text-lg font-bold text-dark-grey dark:text-white ml-2">
           @{profile.username}
         </Text>
+        {!isOwnProfile && (
+          <Pressable onPress={handleBlock} className="p-2 -mr-2">
+            <Ionicons name="ellipsis-horizontal" size={24} color={isDark ? colors.white : colors['dark-grey']} />
+          </Pressable>
+        )}
       </View>
 
       <ScrollView

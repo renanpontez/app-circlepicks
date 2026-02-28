@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Linking,
   Dimensions,
+  Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -14,10 +15,13 @@ import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 
 import { useExperience, useToggleBookmark, usePlaceExperiences } from '@/hooks';
+import { useReportContent } from '@/hooks/useReport';
 import { useAuthStore } from '@/stores';
 import { useTheme } from '@/providers/ThemeProvider';
 import { ExperienceCard } from '@/components/ExperienceCard';
 import { CachedImage } from '@/components/ui/CachedImage';
+import { DropdownMenu } from '@/components/ui/DropdownMenu';
+import type { MenuItem } from '@/components/ui/DropdownMenu';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -31,6 +35,7 @@ export default function ExperienceDetailScreen() {
 
   const { data: experience, isLoading, error } = useExperience(id);
   const { toggle: toggleBookmark, isLoading: bookmarkLoading } = useToggleBookmark();
+  const { mutate: reportContent } = useReportContent();
 
   const { data: placeExperiences } = usePlaceExperiences(
     experience?.place.id ?? '',
@@ -42,7 +47,7 @@ export default function ExperienceDetailScreen() {
 
   const handleBookmarkToggle = async () => {
     if (bookmarkLoading || !experience) return;
-    await toggleBookmark(id, experience.isBookmarked ?? false, experience.bookmarkId);
+    await toggleBookmark(experience.experience_id, experience.isBookmarked ?? false, experience.bookmarkId);
   };
 
   const handleOpenMaps = () => {
@@ -63,6 +68,28 @@ export default function ExperienceDetailScreen() {
 
   const handleEdit = () => {
     router.push(`/experience/${id}/edit`);
+  };
+
+  const handleReport = () => {
+    Alert.alert(
+      t('report.title', 'Report this content'),
+      t('report.message', 'Why are you reporting this?'),
+      [
+        {
+          text: t('report.reasons.inappropriate', 'Inappropriate content'),
+          onPress: () => reportContent({ experience_id: experience.experience_id, reason: 'inappropriate' }),
+        },
+        {
+          text: t('report.reasons.spam', 'Spam'),
+          onPress: () => reportContent({ experience_id: experience.experience_id, reason: 'spam' }),
+        },
+        {
+          text: t('report.reasons.other', 'Other'),
+          onPress: () => reportContent({ experience_id: experience.experience_id, reason: 'other' }),
+        },
+        { text: t('common.cancel', 'Cancel'), style: 'cancel' },
+      ]
+    );
   };
 
   if (isLoading) {
@@ -105,27 +132,31 @@ export default function ExperienceDetailScreen() {
         >
           <Ionicons name="arrow-back" size={22} color="#FFFFFF" />
         </Pressable>
-        <View className="flex-row gap-2">
-          {isOwner && (
-            <Pressable
-              onPress={handleEdit}
-              className="w-10 h-10 bg-black/40 rounded-full items-center justify-center"
-            >
-              <Ionicons name="pencil" size={20} color="#FFFFFF" />
-            </Pressable>
-          )}
-          <Pressable
-            onPress={handleBookmarkToggle}
-            disabled={bookmarkLoading}
-            className="w-10 h-10 bg-black/40 rounded-full items-center justify-center"
-          >
-            <Ionicons
-              name={experience?.isBookmarked ? 'bookmark' : 'bookmark-outline'}
-              size={22}
-              color={experience?.isBookmarked ? '#FD512E' : '#FFFFFF'}
-            />
-          </Pressable>
-        </View>
+        <DropdownMenu
+          offsetTop={insets.top + 8 + 40 + 8}
+          items={[
+            {
+              icon: experience?.isBookmarked ? 'bookmark' : 'bookmark-outline',
+              label: experience?.isBookmarked
+                ? t('bookmark.saved.title', 'Experience saved')
+                : t('common.save', 'Save'),
+              onPress: handleBookmarkToggle,
+            },
+            ...(isOwner
+              ? [{
+                  icon: 'pencil' as const,
+                  label: t('common.edit', 'Edit'),
+                  onPress: handleEdit,
+                }]
+              : [{
+                  icon: 'flag-outline' as const,
+                  label: t('report.title', 'Report'),
+                  onPress: handleReport,
+                  destructive: true,
+                }]
+            ),
+          ] satisfies MenuItem[]}
+        />
       </View>
 
       <ScrollView className="flex-1" bounces={false}>
