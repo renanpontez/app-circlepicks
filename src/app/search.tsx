@@ -211,6 +211,7 @@ export default function SearchScreen() {
                         <CachedImage
                           source={experience.place.thumbnail_image_url}
                           style={{ width: '100%', height: '100%' }}
+                          contentFit="cover"
                         />
                       ) : (
                         <View className="w-full h-full items-center justify-center">

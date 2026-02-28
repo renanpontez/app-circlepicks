@@ -1,11 +1,12 @@
-import React from 'react';
-import { View, Text, Pressable } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Pressable, Alert, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 
-import { useAppStore } from '@/stores';
+import { useAppStore, toast } from '@/stores';
+import { useAuth } from '@/hooks';
 import { useTheme } from '@/providers/ThemeProvider';
 import type { Language, ThemeMode } from '@/stores/app.store';
 import i18n from '@/i18n';
@@ -14,7 +15,9 @@ export default function SettingsScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const { language, theme, setLanguage, setTheme } = useAppStore();
+  const { deleteAccount } = useAuth();
   const { isDark } = useTheme();
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleLanguageChange = (lang: Language) => {
     setLanguage(lang);
@@ -23,6 +26,30 @@ export default function SettingsScreen() {
 
   const handleThemeChange = (mode: ThemeMode) => {
     setTheme(mode);
+  };
+
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      t('deleteAccount.confirmTitle', 'Delete your account?'),
+      t('deleteAccount.confirmMessage', 'This will permanently delete your account and all your data, including your experiences, bookmarks, and followers. This action cannot be undone.'),
+      [
+        { text: t('common.cancel', 'Cancel'), style: 'cancel' },
+        {
+          text: t('deleteAccount.confirm', 'Delete my account'),
+          style: 'destructive',
+          onPress: async () => {
+            setIsDeleting(true);
+            try {
+              await deleteAccount();
+            } catch {
+              toast.error(t('deleteAccount.error', 'Failed to delete account. Please try again.'));
+            } finally {
+              setIsDeleting(false);
+            }
+          },
+        },
+      ],
+    );
   };
 
   return (
@@ -119,6 +146,23 @@ export default function SettingsScreen() {
             >
               {t('settings.dark')}
             </Text>
+          </Pressable>
+        </View>
+
+        {/* Delete Account */}
+        <View className="mt-8 pt-6 border-t border-divider dark:border-secondary-700">
+          <Pressable
+            onPress={handleDeleteAccount}
+            disabled={isDeleting}
+            className="flex-row items-center justify-center py-3"
+          >
+            {isDeleting ? (
+              <ActivityIndicator size="small" color="#EF4444" />
+            ) : (
+              <Text className="text-red-500 text-sm">
+                {t('deleteAccount.title', 'Delete account')}
+              </Text>
+            )}
           </Pressable>
         </View>
       </View>
