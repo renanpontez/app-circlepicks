@@ -48,7 +48,24 @@ export default function UserProfileScreen() {
 
   const handleFollowToggle = async () => {
     if (followLoading || !userId) return;
-    await toggleFollow(userId, followStatus?.isFollowing ?? false);
+
+    if (followStatus?.isFollowing) {
+      Alert.alert(
+        t('unfollow.confirmTitle', 'Unfollow user?'),
+        t('unfollow.confirmMessage', 'You will no longer see their experiences in your feed.'),
+        [
+          { text: t('common.cancel', 'Cancel'), style: 'cancel' },
+          {
+            text: t('unfollow.confirm', 'Unfollow'),
+            style: 'destructive',
+            onPress: () => toggleFollow(userId, true),
+          },
+        ],
+      );
+      return;
+    }
+
+    await toggleFollow(userId, false);
   };
 
   const handleBlock = () => {
@@ -121,9 +138,9 @@ export default function UserProfileScreen() {
       >
         {/* Profile Info */}
         <View className="bg-white dark:bg-secondary-900 px-4 py-6 border-b border-divider dark:border-secondary-700">
-          <View className="flex-row items-center mb-4">
+          <View className="flex-row items-center mb-3">
             {/* Avatar */}
-            <View className="w-20 h-20 rounded-full bg-surface dark:bg-secondary-800 overflow-hidden mr-4">
+            <View className="w-20 h-20 rounded-full bg-surface dark:bg-secondary-800 overflow-hidden mr-5">
               {profile.avatar_url ? (
                 <CachedImage source={profile.avatar_url} style={{ width: '100%', height: '100%' }} recyclingKey={userId} />
               ) : (
@@ -135,29 +152,21 @@ export default function UserProfileScreen() {
               )}
             </View>
 
-            {/* Stats */}
-            <View className="flex-1 flex-row justify-around">
-              <StatItem
-                value={profile.stats.experiences_count}
-                label={t('profile.stats.experiences', 'Experiences')}
-              />
-              <StatItem
-                value={profile.stats.followers_count}
-                label={t('profile.stats.followers', 'Followers')}
-              />
-              <StatItem
-                value={profile.stats.following_count}
-                label={t('profile.stats.following', 'Following')}
-              />
+            {/* Name + Stats */}
+            <View className="flex-1">
+              <Text className="text-xl font-bold text-dark-grey dark:text-white">
+                {profile.display_name}
+              </Text>
+              <Text className="text-medium-grey dark:text-secondary-400 text-base mt-1">
+                <Text className="font-bold text-dark-grey dark:text-white">{profile.stats.experiences_count}</Text> {t('profile.stats.experiences', 'Experiences')}{'  '}
+                <Text className="font-bold text-dark-grey dark:text-white">{profile.stats.followers_count}</Text> {t('profile.stats.followers', 'Followers')}
+              </Text>
             </View>
           </View>
 
-          {/* Name */}
-          <Text className="text-lg font-bold text-dark-grey dark:text-white">
-            {profile.display_name}
-          </Text>
+          {/* Bio */}
           {profile.bio && (
-            <Text className="text-medium-grey dark:text-secondary-400 mt-1">{profile.bio}</Text>
+            <Text className="text-medium-grey dark:text-secondary-400 mb-1">{profile.bio}</Text>
           )}
 
           {/* Follow Button */}
@@ -225,11 +234,3 @@ export default function UserProfileScreen() {
   );
 }
 
-function StatItem({ value, label }: { value: number; label: string }) {
-  return (
-    <View className="items-center">
-      <Text className="text-xl font-bold text-dark-grey dark:text-white">{value}</Text>
-      <Text className="text-medium-grey dark:text-secondary-400 text-sm">{label}</Text>
-    </View>
-  );
-}

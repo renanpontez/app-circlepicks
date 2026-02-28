@@ -73,9 +73,9 @@ export default function ProfileScreen() {
     <>
       {/* Profile Info */}
       <View className="bg-white dark:bg-secondary-900 px-4 py-6 border-b border-divider dark:border-secondary-700">
-        <View className="flex-row items-center mb-4">
+        <View className="flex-row items-center mb-3">
           {/* Avatar */}
-          <View className="w-20 h-20 rounded-full bg-surface dark:bg-secondary-800 overflow-hidden mr-4">
+          <View className="w-20 h-20 rounded-full bg-surface dark:bg-secondary-800 overflow-hidden mr-5">
             {user?.avatar_url ? (
               <CachedImage source={user.avatar_url} style={{ width: '100%', height: '100%' }} recyclingKey={user.id} />
             ) : (
@@ -87,32 +87,22 @@ export default function ProfileScreen() {
             )}
           </View>
 
-          {/* Stats */}
-          <View className="flex-1 flex-row justify-around">
-            <StatItem
-              value={profile?.stats.experiences_count || 0}
-              label={t('profile.stats.experiences', 'Experiences')}
-            />
-            <StatItem
-              value={profile?.stats.followers_count || 0}
-              label={t('profile.stats.followers', 'Followers')}
-            />
-            <StatItem
-              value={profile?.stats.following_count || 0}
-              label={t('profile.stats.following', 'Following')}
-            />
+          {/* Name + Stats */}
+          <View className="flex-1">
+            <Text className="text-xl font-bold text-dark-grey dark:text-white">
+              {user?.display_name}
+            </Text>
+            <Text className="text-medium-grey dark:text-secondary-400 text-base mt-1">
+              <Text className="font-bold text-dark-grey dark:text-white">{profile?.stats.experiences_count || 0}</Text> {t('profile.stats.experiences', 'Experiences')}{'  '}
+              <Text className="font-bold text-dark-grey dark:text-white">{profile?.stats.followers_count || 0}</Text> {t('profile.stats.followers', 'Followers')}
+            </Text>
           </View>
         </View>
-
-        {/* Name and Username */}
-        <Text className="text-lg font-bold text-dark-grey dark:text-white">
-          {user?.display_name}
-        </Text>
 
         {/* Edit Profile Button */}
         <Pressable
           onPress={() => router.push('/profile/edit')}
-          className="mt-4 border border-divider dark:border-secondary-700 rounded-full py-2.5 items-center active:bg-surface dark:active:bg-secondary-700"
+          className="mt-2 border border-divider dark:border-secondary-700 rounded-full py-2.5 items-center active:bg-surface dark:active:bg-secondary-700"
         >
           <Text className="text-dark-grey dark:text-white font-medium">
             {t('profile.editProfile', 'Edit Profile')}
@@ -224,23 +214,17 @@ function ProfileHeaderSkeleton() {
   return (
     <>
       <View className="bg-white dark:bg-secondary-900 px-4 py-6 border-b border-divider dark:border-secondary-700">
-        <View className="flex-row items-center mb-4">
+        <View className="flex-row items-center mb-3">
           {/* Avatar */}
-          <ShimmerBlock className="w-20 h-20 rounded-full mr-4" />
-          {/* Stats */}
-          <View className="flex-1 flex-row justify-around">
-            {[1, 2, 3].map((i) => (
-              <View key={i} className="items-center">
-                <ShimmerBlock className="h-6 w-8 rounded mb-1" />
-                <ShimmerBlock className="h-3.5 w-14 rounded" />
-              </View>
-            ))}
+          <ShimmerBlock className="w-20 h-20 rounded-full mr-5" />
+          {/* Name + Stats */}
+          <View className="flex-1">
+            <ShimmerBlock className="h-6 w-32 rounded mb-2" />
+            <ShimmerBlock className="h-4 w-48 rounded" />
           </View>
         </View>
-        {/* Name */}
-        <ShimmerBlock className="h-5 w-32 rounded mb-4" />
         {/* Edit Profile Button */}
-        <ShimmerBlock className="h-11 w-full rounded-full" />
+        <ShimmerBlock className="h-11 w-full rounded-full mt-2" />
       </View>
       {/* Tabs */}
       <View className="flex-row bg-white dark:bg-secondary-900 border-b border-divider dark:border-secondary-700">
@@ -252,15 +236,6 @@ function ProfileHeaderSkeleton() {
         </View>
       </View>
     </>
-  );
-}
-
-function StatItem({ value, label }: { value: number; label: string }) {
-  return (
-    <View className="items-center">
-      <Text className="text-xl font-bold text-dark-grey dark:text-white">{value}</Text>
-      <Text className="text-medium-grey dark:text-secondary-400 text-sm">{label}</Text>
-    </View>
   );
 }
 

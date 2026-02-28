@@ -111,7 +111,7 @@ export function ExperienceCard({
 
       {/* Info */}
       <View className="px-1 pt-2.5 pb-1">
-        <Text className="text-base font-bold text-dark-grey dark:text-white" numberOfLines={1}>
+        <Text className="text-lg font-bold text-dark-grey dark:text-white" numberOfLines={1}>
           {place.name}
         </Text>
 
