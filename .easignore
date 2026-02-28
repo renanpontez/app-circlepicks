@@ -10,7 +10,8 @@ dist/
 web-build/
 expo-env.d.ts
 
-# Native
+# Native — EAS runs pod install, so Pods are not needed
+ios/Pods/
 *.orig.*
 *.jks
 *.p8
@@ -38,4 +39,8 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+# Not needed for builds
+.git/
+.claude/
+docs/
 app-example
