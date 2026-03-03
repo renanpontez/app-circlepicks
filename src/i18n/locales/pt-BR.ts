@@ -147,6 +147,7 @@ export default {
     noExperiences: 'Este usuário ainda não adicionou nenhuma experiência',
     follow: 'Seguir',
     following: 'Seguindo',
+    blocked: 'Bloqueado',
   },
   explore: {
     title: 'Explorar',
@@ -259,11 +260,17 @@ export default {
   block: {
     title: 'Bloquear usuário',
     confirmMessage: 'Você não verá mais conteúdo deste usuário. Tem certeza?',
+    afterReportMessage: 'Deseja também bloquear este usuário?',
     confirm: 'Bloquear',
     success: 'Usuário bloqueado',
     successMessage: 'Você não verá mais conteúdo deste usuário.',
     error: 'Falha ao bloquear usuário',
     errorMessage: 'Tente novamente mais tarde.',
+  },
+  unblock: {
+    title: 'Desbloquear usuário',
+    success: 'Usuário desbloqueado',
+    successMessage: 'Você pode ver o conteúdo deste usuário novamente.',
   },
   unfollow: {
     confirmTitle: 'Deixar de seguir?',

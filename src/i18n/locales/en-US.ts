@@ -147,6 +147,7 @@ export default {
     noExperiences: "This user hasn't added any experiences yet",
     follow: 'Follow',
     following: 'Following',
+    blocked: 'Blocked',
   },
   explore: {
     title: 'Explore',
@@ -259,11 +260,17 @@ export default {
   block: {
     title: 'Block user',
     confirmMessage: 'You will no longer see content from this user. Are you sure?',
+    afterReportMessage: 'Would you also like to block this user?',
     confirm: 'Block',
     success: 'User blocked',
     successMessage: 'You will no longer see content from this user.',
     error: 'Failed to block user',
     errorMessage: 'Please try again later.',
+  },
+  unblock: {
+    title: 'Unblock user',
+    success: 'User unblocked',
+    successMessage: 'You can now see content from this user again.',
   },
   unfollow: {
     confirmTitle: 'Unfollow user?',

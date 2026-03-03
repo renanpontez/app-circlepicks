@@ -16,6 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { useExperience, useToggleBookmark, usePlaceExperiences } from '@/hooks';
 import { useReportContent } from '@/hooks/useReport';
+import { useBlockUser } from '@/hooks/useBlock';
 import { useAuthStore } from '@/stores';
 import { useTheme } from '@/providers/ThemeProvider';
 import { ExperienceCard } from '@/components/ExperienceCard';
@@ -35,7 +36,31 @@ export default function ExperienceDetailScreen() {
 
   const { data: experience, isLoading, error } = useExperience(id);
   const { toggle: toggleBookmark, isLoading: bookmarkLoading } = useToggleBookmark();
-  const { mutate: reportContent } = useReportContent();
+  const { mutate: blockUser } = useBlockUser();
+  const { mutate: reportContent } = useReportContent({
+    onSuccess: () => {
+      if (!experience) return;
+      Alert.alert(
+        t('block.title', 'Block user'),
+        t('block.afterReportMessage', 'Would you also like to block this user?'),
+        [
+          {
+            text: t('common.no', 'No'),
+            style: 'cancel',
+            onPress: () => router.replace('/(tabs)'),
+          },
+          {
+            text: t('block.confirm', 'Block'),
+            style: 'destructive',
+            onPress: () => {
+              blockUser(experience.user.id);
+              router.replace('/(tabs)');
+            },
+          },
+        ],
+      );
+    },
+  });
 
   const { data: placeExperiences } = usePlaceExperiences(
     experience?.place.id ?? '',

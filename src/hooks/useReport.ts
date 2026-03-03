@@ -5,12 +5,17 @@ import { toast } from '@/stores/toast.store';
 import i18n from '@/i18n';
 
 interface ReportRequest {
-  experience_id: string;
+  experience_id?: string;
+  user_id?: string;
   reason: 'spam' | 'inappropriate' | 'misleading' | 'other';
   description?: string;
 }
 
-export function useReportContent() {
+interface UseReportContentOptions {
+  onSuccess?: () => void;
+}
+
+export function useReportContent(options?: UseReportContentOptions) {
   const httpClient = getHttpClient();
 
   return useMutation({
@@ -21,6 +26,7 @@ export function useReportContent() {
         i18n.t('report.success', 'Report submitted'),
         i18n.t('report.successMessage', 'Thank you for helping keep our community safe.')
       );
+      options?.onSuccess?.();
     },
     onError: () => {
       toast.error(

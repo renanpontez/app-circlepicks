@@ -17,9 +17,11 @@ interface DropdownMenuProps {
   offsetTop: number;
   /** Distance from right of screen to the dropdown */
   offsetRight?: number;
+  /** Custom trigger element — receives onPress handler */
+  renderTrigger?: (onPress: () => void) => React.ReactNode;
 }
 
-export function DropdownMenu({ items, offsetTop, offsetRight = 16 }: DropdownMenuProps) {
+export function DropdownMenu({ items, offsetTop, offsetRight = 16, renderTrigger }: DropdownMenuProps) {
   const { isDark } = useTheme();
   const [visible, setVisible] = useState(false);
 
@@ -30,13 +32,15 @@ export function DropdownMenu({ items, offsetTop, offsetRight = 16 }: DropdownMen
 
   return (
     <>
-      <TouchableOpacity
-        onPress={() => setVisible(true)}
-        activeOpacity={0.7}
-        style={triggerStyles.button}
-      >
-        <Ionicons name="ellipsis-vertical" size={20} color="#FFFFFF" />
-      </TouchableOpacity>
+      {renderTrigger ? renderTrigger(() => setVisible(true)) : (
+        <TouchableOpacity
+          onPress={() => setVisible(true)}
+          activeOpacity={0.7}
+          style={triggerStyles.button}
+        >
+          <Ionicons name="ellipsis-vertical" size={20} color="#FFFFFF" />
+        </TouchableOpacity>
+      )}
 
       <Modal visible={visible} transparent animationType="fade" onRequestClose={() => setVisible(false)}>
         {/* Backdrop */}
