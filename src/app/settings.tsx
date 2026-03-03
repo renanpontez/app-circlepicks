@@ -149,6 +149,20 @@ export default function SettingsScreen() {
           </Pressable>
         </View>
 
+        {/* Blocked Users */}
+        <Pressable
+          onPress={() => router.push('/blocked-users')}
+          className="mt-8 pt-6 border-t border-divider dark:border-secondary-700 flex-row items-center justify-between"
+        >
+          <View className="flex-row items-center">
+            <Ionicons name="ban-outline" size={20} color={isDark ? '#FFFFFF' : '#111111'} />
+            <Text className="text-dark-grey dark:text-white font-medium ml-3">
+              {t('settings.blockedUsers', 'Blocked users')}
+            </Text>
+          </View>
+          <Ionicons name="chevron-forward" size={20} color={isDark ? '#a3a3a3' : '#888888'} />
+        </Pressable>
+
         {/* Delete Account */}
         <View className="mt-8 pt-6 border-t border-divider dark:border-secondary-700">
           <Pressable

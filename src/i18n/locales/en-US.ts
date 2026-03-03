@@ -269,6 +269,8 @@ export default {
   },
   unblock: {
     title: 'Unblock user',
+    confirm: 'Unblock',
+    confirmMessage: 'Are you sure you want to unblock {{name}}?',
     success: 'User unblocked',
     successMessage: 'You can now see content from this user again.',
   },
@@ -324,5 +326,7 @@ export default {
     languageDescription: 'Select the app language',
     portuguese: 'Portuguese',
     english: 'English',
+    blockedUsers: 'Blocked users',
+    noBlockedUsers: "You haven't blocked anyone",
   },
 } as const;

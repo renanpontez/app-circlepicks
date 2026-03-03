@@ -9,6 +9,34 @@ interface BlockStatusResponse {
   isBlocked: boolean;
 }
 
+interface BlockedUser {
+  id: string;
+  display_name: string;
+  username: string;
+  avatar_url: string | null;
+  blocked_at: string;
+}
+
+interface BlockedUsersResponse {
+  users: BlockedUser[];
+}
+
+export function useBlockedUsers() {
+  const httpClient = getHttpClient();
+  const { isAuthenticated } = useAuthStore();
+
+  return useQuery({
+    queryKey: ['blocked-users'],
+    queryFn: async () => {
+      const response = await httpClient.get<BlockedUsersResponse>(
+        API_ENDPOINTS.blocks.list
+      );
+      return response.data.users;
+    },
+    enabled: isAuthenticated,
+  });
+}
+
 export function useBlockStatus(userId: string) {
   const httpClient = getHttpClient();
   const { isAuthenticated, user } = useAuthStore();
@@ -44,6 +72,7 @@ export function useBlockUser() {
       queryClient.invalidateQueries({ queryKey: ['following'] });
       queryClient.invalidateQueries({ queryKey: ['profile', blockedUserId] });
       queryClient.invalidateQueries({ queryKey: ['profile', 'me'] });
+      queryClient.invalidateQueries({ queryKey: ['blocked-users'] });
       toast.success(
         i18n.t('block.success', 'User blocked'),
         i18n.t('block.successMessage', 'You will no longer see content from this user.')
@@ -71,6 +100,7 @@ export function useUnblockUser() {
       queryClient.invalidateQueries({ queryKey: ['feed'] });
       queryClient.invalidateQueries({ queryKey: ['explore'] });
       queryClient.invalidateQueries({ queryKey: ['profile', userId] });
+      queryClient.invalidateQueries({ queryKey: ['blocked-users'] });
       toast.success(
         i18n.t('unblock.success', 'User unblocked'),
         i18n.t('unblock.successMessage', 'You can now see content from this user again.')

@@ -269,6 +269,8 @@ export default {
   },
   unblock: {
     title: 'Desbloquear usuário',
+    confirm: 'Desbloquear',
+    confirmMessage: 'Tem certeza que deseja desbloquear {{name}}?',
     success: 'Usuário desbloqueado',
     successMessage: 'Você pode ver o conteúdo deste usuário novamente.',
   },
@@ -324,5 +326,7 @@ export default {
     languageDescription: 'Selecione o idioma do aplicativo',
     portuguese: 'Português',
     english: 'Inglês',
+    blockedUsers: 'Usuários bloqueados',
+    noBlockedUsers: 'Você não bloqueou ninguém',
   },
 } as const;

@@ -64,6 +64,24 @@ export default function UserProfileScreen() {
     reportUser({ user_id: userId, reason });
   };
 
+  const handleBlock = () => {
+    Alert.alert(
+      t('block.title', 'Block user'),
+      t('block.confirmMessage', 'You will no longer see content from this user. Are you sure?'),
+      [
+        { text: t('common.cancel', 'Cancel'), style: 'cancel' },
+        {
+          text: t('block.confirm', 'Block'),
+          style: 'destructive',
+          onPress: () => {
+            blockUser(userId);
+            router.replace('/(tabs)');
+          },
+        },
+      ]
+    );
+  };
+
   const profileMenuItems: MenuItem[] = isBlocked
     ? [
         {
@@ -140,24 +158,6 @@ export default function UserProfileScreen() {
     }
 
     await toggleFollow(userId, false);
-  };
-
-  const handleBlock = () => {
-    Alert.alert(
-      t('block.title', 'Block user'),
-      t('block.confirmMessage', 'You will no longer see content from this user. Are you sure?'),
-      [
-        { text: t('common.cancel', 'Cancel'), style: 'cancel' },
-        {
-          text: t('block.confirm', 'Block'),
-          style: 'destructive',
-          onPress: () => {
-            blockUser(userId);
-            router.replace('/(tabs)');
-          },
-        },
-      ]
-    );
   };
 
   if (profileLoading && !profile) {

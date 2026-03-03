@@ -87,6 +87,7 @@ export const API_ENDPOINTS = {
 
   // Blocks
   blocks: {
+    list: '/api/blocks',
     create: '/api/blocks',
     status: (userId: string) => `/api/blocks/${userId}/status`,
     remove: (userId: string) => `/api/blocks/${userId}`,
