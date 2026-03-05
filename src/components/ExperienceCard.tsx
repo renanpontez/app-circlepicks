@@ -26,7 +26,7 @@ export function ExperienceCard({
   return (
     <Pressable
       onPress={onPress}
-      className="mb-6 active:opacity-90"
+      className="mb-4 active:opacity-90"
     >
       {/* User Header */}
       {showUser && (
