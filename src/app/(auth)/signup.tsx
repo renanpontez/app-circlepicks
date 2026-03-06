@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Pressable, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Image, Linking } from 'react-native';
+import { View, Text, TextInput, Pressable, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -21,6 +21,7 @@ export default function SignUpScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isAppleLoading, setIsAppleLoading] = useState(false);
@@ -33,6 +34,11 @@ export default function SignUpScreen() {
   }, []);
 
   const handleSignUp = async () => {
+    if (!acceptedTerms) {
+      setError(t('signup.error.termsRequired', 'You must agree to the Terms of Use and Privacy Policy'));
+      return;
+    }
+
     if (!displayName || !email || !password) {
       setError(t('signup.error.required', 'Please fill in all fields'));
       return;
@@ -56,6 +62,11 @@ export default function SignUpScreen() {
   };
 
   const handleGoogleSignIn = async () => {
+    if (!acceptedTerms) {
+      setError(t('signup.error.termsRequired', 'You must agree to the Terms of Use and Privacy Policy'));
+      return;
+    }
+
     try {
       setError(null);
       setIsGoogleLoading(true);
@@ -68,6 +79,11 @@ export default function SignUpScreen() {
   };
 
   const handleAppleSignIn = async () => {
+    if (!acceptedTerms) {
+      setError(t('signup.error.termsRequired', 'You must agree to the Terms of Use and Privacy Policy'));
+      return;
+    }
+
     try {
       setError(null);
       setIsAppleLoading(true);
@@ -245,22 +261,32 @@ export default function SignUpScreen() {
                 )}
               </Pressable>
 
-              <Text className="text-light-grey text-xs text-center mt-2">
-                {t('signup.termsPrefix', 'By signing up, you agree to our ')}
-                <Text
-                  className="text-primary underline"
-                  onPress={() => Linking.openURL('https://circlepicks.app/legal/terms')}
-                >
-                  {t('signup.termsLink', 'Terms of Service')}
+              <Pressable
+                onPress={() => setAcceptedTerms(!acceptedTerms)}
+                className="flex-row items-start gap-3 mt-2"
+              >
+                <View className={`w-5 h-5 rounded border-2 items-center justify-center mt-0.5 ${acceptedTerms ? 'bg-primary border-primary' : 'border-divider'}`}>
+                  {acceptedTerms && (
+                    <Ionicons name="checkmark" size={14} color="#FFFFFF" />
+                  )}
+                </View>
+                <Text className="text-medium-grey text-xs flex-1 leading-5">
+                  {t('signup.termsAgree', 'I agree to the ')}
+                  <Text
+                    className="text-primary underline"
+                    onPress={() => router.push('/(auth)/terms' as any)}
+                  >
+                    {t('signup.termsLink', 'Terms of Use')}
+                  </Text>
+                  {t('signup.termsAnd', ' and ')}
+                  <Text
+                    className="text-primary underline"
+                    onPress={() => router.push('/(auth)/terms' as any)}
+                  >
+                    {t('signup.privacyLink', 'Privacy Policy')}
+                  </Text>
                 </Text>
-                {t('signup.termsAnd', ' and ')}
-                <Text
-                  className="text-primary underline"
-                  onPress={() => Linking.openURL('https://circlepicks.app/legal/privacy')}
-                >
-                  {t('signup.privacyLink', 'Privacy Policy')}
-                </Text>
-              </Text>
+              </Pressable>
             </View>
 
             {/* Footer */}
