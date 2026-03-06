@@ -124,7 +124,8 @@ export default function SignUpScreen() {
               {t('signup.subtitle', 'Join Circle Picks and start sharing your favorite experiences')}
             </Text>
 
-            {/* Google Sign In Button */}
+            {/* Social Sign In Buttons */}
+            <View className="gap-3">
             <Pressable
               onPress={handleGoogleSignIn}
               disabled={isAnyLoading}
@@ -164,6 +165,7 @@ export default function SignUpScreen() {
                 )}
               </Pressable>
             )}
+            </View>
 
             <View className="mb-6" />
 
